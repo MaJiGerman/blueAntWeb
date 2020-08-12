@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="utf-8">
+
+</head>
+<body>
   <h1>Bienvenido, {{name}}</h1>
+  <form action='stats' method="post">
+	<input type='text' name="usrName">
+	<input type='submit' value="Saluda">
+  </form>
   <form action='home' method="post">
 	<input type='submit' value="Home">
   </form>
+</body>
 </html>
