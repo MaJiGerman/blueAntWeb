@@ -6,10 +6,68 @@
 </head>
 <body>
   <h1>Bienvenido, {{name}}</h1>
+  
+	<form action='results' method="post">
+		<div class="form-group">
+			<label for="eje1">Eje X</label>
+			<select class="form-control" id="tabla" name="tabla">
+					<option value="usuario">Usuario</option>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<label for="columna">Columna</label>
+			<select class="form-control" id="columna" name="columna">
+					<option value="edad">Edad</option>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<label for="rangoIni">
+					Desde
+			</label>
+			<input type="number" class="form-control" id="rangoIni" name="rangoDesde">
+		</div>
+		
+		<div class="form-group">
+			<label for="rangoFin">
+					Hasta
+			</label>
+			<input type="number" class="form-control" id="rangoFin" name="rangoHasta">
+		</div>
+		<div class="form-group">
+			<label>Genero</label>
+			<select class="form-control" id="genero" name="genero">
+					<option selected="selected" value="2">Ambos</option>
+					<option value="0">Masculino</option>
+					<option value="1">Femenino</option>
+			</select>
+		</div>
+	
+		<input type='submit' value="Buscar">
+  	</form>
+  	<form action='results' method="post">
+		<div class="form-group">
+		<input type="hidden" id="tabla" name="tabla" value="usuario">
+		<input type="hidden" id="columna" name="columna" value="genero">
+			<label for="columna">Genero</label>
+			<select class="form-control" id="genero" name="genero">
+					<option value="2">Ambos</option>
+					<option value="0">Masculino</option>
+					<option value="1">Femenino</option>
+			</select>
+		</div>
+	
+		<input type='submit' value="Buscar">
+  	</form>
+  	
+  	<br>
+  	
   <form action='stats' method="post">
-	<input type='text' name="usrName">
+	<input type='text' name="usrName">	
 	<input type='submit' value="Saluda">
   </form>
+  
   <form action='home' method="post">
 	<input type='submit' value="Home">
   </form>
