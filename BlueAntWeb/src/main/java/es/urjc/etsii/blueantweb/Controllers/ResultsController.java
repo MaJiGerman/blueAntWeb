@@ -1,6 +1,7 @@
 package es.urjc.etsii.blueantweb.Controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +86,12 @@ public class ResultsController {
 		usuarios_final.addAll(usuarios_0);
 		usuarios_final.addAll(usuarios_1);
 		usuarios_final.addAll(usuarios);
+		List<Integer> aux_lista_consulta = new ArrayList<>();
 		
 		for(int i=0; i<usuarios_final.size(); i++) {
 			Usuario aux_u = usuarios_final.get(i);
+			aux_lista_consulta.add(aux_u.getId());
+			/*
 			System.out.println("Usuario: " + aux_u.getId());
 			List<Integer> lista_partidas = matchRepo.findByIdUsuario2(aux_u.getId());
 			System.out.println("Tiene " + lista_partidas.size() + " partidas.");
@@ -106,12 +110,49 @@ public class ResultsController {
 					}
 				}
 			}
+			*/
 		}
+
+		List<Object[]> lista_partidas = new ArrayList<>();
+		int sublista_ini = 0;
+		int sublista_fin = 2000;
+		int step = 2000;
+		
+		if(aux_lista_consulta.size() < 2000)
+			lista_partidas = matchRepo.findByIdUsuario2List(aux_lista_consulta);
+		else {
+			System.out.println("Hay que dividir la lista, hay mas de "+sublista_fin+" parametros");
+			while(sublista_fin != aux_lista_consulta.size()) {
+				List<Integer> sublista = aux_lista_consulta.subList(sublista_ini, sublista_fin);
+				List<Object[]> parcial_lista_partidas = matchRepo.findByIdUsuario2List(sublista);
+				lista_partidas.addAll(parcial_lista_partidas);
+				sublista_ini = sublista_fin + 1;
+				sublista_fin = sublista_fin + step;
+				if(sublista_fin >= aux_lista_consulta.size())
+					sublista_fin = aux_lista_consulta.size();
+			}
+		}
+		
+		HashMap<Integer, List<Integer>> hashDatosUsr = new HashMap<Integer, List<Integer>>();
+		
+		for (Object[] par : lista_partidas) {
+		      System.out.println("Id: " + par[0] + ", IdUsuario2: " + par[1]);
+		      if(hashDatosUsr.containsKey(par[1])) {
+		    	  List<Integer> id_partidas = hashDatosUsr.get((Integer) par[1]);
+		    	  id_partidas.add((Integer) par[0]);
+		    	  hashDatosUsr.put((Integer) par[1], id_partidas);
+		      }else {
+		    	  List<Integer> id_partidas = new ArrayList<>();
+		    	  id_partidas.add((Integer) par[0]);
+		    	  hashDatosUsr.put((Integer) par[1], id_partidas);
+		      }
+		  }
 			
 		System.out.println("BBBBBBBBB");
 		
 		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios_final);
+		model.addAttribute("num_resultados", usuarios_final.size());
 		return "results_template";
 	}
 }
