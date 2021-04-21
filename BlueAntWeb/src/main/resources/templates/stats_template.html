@@ -9,9 +9,10 @@
   
 	<form action='results' method="post">
 		<div class="form-group">
-			<label for="eje1">Eje X</label>
-			<select class="form-control" id="tabla" name="tabla">
-					<option value="usuario">Usuario</option>
+			<label for="eje1">Dividir por:</label>
+			<select class="form-control" id="division" name="division">
+					<option value="d_edad">Edad</option>
+					<option value="d_genero">Genero</option>
 			</select>
 		</div>
 		
@@ -42,6 +43,11 @@
 					<option value="0">Masculino</option>
 					<option value="1">Femenino</option>
 			</select>
+		</div>
+		
+		<div class="form-group">
+			<label>Incluir solo Centros</label>
+			<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
 		</div>
 	
 		<input type='submit' value="Buscar">
