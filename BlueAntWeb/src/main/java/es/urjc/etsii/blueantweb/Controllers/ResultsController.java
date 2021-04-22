@@ -43,8 +43,6 @@ public class ResultsController {
 		
 		List<Usuario> usuarios_final = new ArrayList<>();
 		List<Usuario> usuarios = new ArrayList<>();
-		List<Usuario> usuarios_1 = new ArrayList<>();
-		List<Usuario> usuarios_0 = new ArrayList<>();
 
 		class myPartidaObject{
 			public int _idPartida;
@@ -75,45 +73,34 @@ public class ResultsController {
 		if(columna.equals("edad"))
 		{	
 			System.out.println("SE BUSCA POR EDAD");
-			if(genero.equals("0") || genero.equals("1")) 
-				usuarios = userRepo.findByAgeAndGender(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
-			else
-				usuarios = userRepo.findByAge(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
-			
+			if(genero.equals("0") || genero.equals("1")){ 
+				if(solo_centros != null) {
+					usuarios = userRepo.findByAgeAndGenderAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
+				}else {
+					usuarios = userRepo.findByAgeAndGender(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
+				}
+			}else {
+				if(solo_centros != null) {
+					usuarios = userRepo.findByAgeAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
+				}else {
+					usuarios = userRepo.findByAge(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
+				}
+			}
 			if (!usuarios.isEmpty() && usuarios.size() > 0) {
 				System.out.println("se han encontrado "+usuarios.size()+" resultados");
-			    Usuario u = usuarios.get(0);
-				System.out.println(u.getNombre());
-				System.out.println(u.getGenero());
-				System.out.println(u.getEdadMeses());
 			}
-		}else if(columna.equals("genero") || !genero.equals("-1")) 
-		{
-			System.out.println("SE BUSCA POR GENERO " + genero);
-			if (genero.equals("1") || genero.equals("2")) {
-				usuarios_1 = userRepo.findByGender(Integer.parseInt("1"));
-			}
-			if (!usuarios_1.isEmpty() && usuarios_1.size() > 0) {
-				System.out.println("se han encontrado "+usuarios_1.size()+" resultados");
-			    Usuario u = usuarios_1.get(0);
-				System.out.println(u.getNombre());
-				System.out.println(u.getGenero());
-				System.out.println(u.getEdadMeses());
-			}
-			if (genero.equals("0") || genero.equals("2")) {
-				usuarios_0 = userRepo.findByGender(Integer.parseInt("0"));
-			}
-			if (!usuarios_0.isEmpty() && usuarios_0.size() > 0) {
-				System.out.println("se han encontrado "+usuarios_0.size()+" resultados");
-			    Usuario u = usuarios_0.get(0);
-				System.out.println(u.getNombre());
-				System.out.println(u.getGenero());
-				System.out.println(u.getEdadMeses());
+			else{
+				model.addAttribute("filtro_edad_ini", rangoDesde);
+				model.addAttribute("filtro_edad_fin", rangoHasta);
+				model.addAttribute("genero", genero);
+				if(solo_centros != null)
+					model.addAttribute("centros", "SI");
+				else
+					model.addAttribute("centros", "NO");
+				return "filter_empty_template";
 			}
 		}
 
-		usuarios_final.addAll(usuarios_0);
-		usuarios_final.addAll(usuarios_1);
 		usuarios_final.addAll(usuarios);
 		List<Integer> aux_lista_consulta = new ArrayList<>();
 		
@@ -133,7 +120,7 @@ public class ResultsController {
 		if(aux_lista_consulta.size() < 2000)
 			lista_partidas = matchRepo.findByIdUsuario2List(aux_lista_consulta);
 		else {
-			System.out.println("Hay que dividir la lista, hay mas de "+sublista_fin+" parametros");
+			System.out.println("Hay que dividir la lista de partidas consultados, hay mas de "+sublista_fin+" parametros. ("+aux_lista_consulta.size()+")");
 			while(sublista_fin != aux_lista_consulta.size()) {
 				List<Integer> sublista = aux_lista_consulta.subList(sublista_ini, sublista_fin);
 				List<Object[]> parcial_lista_partidas = matchRepo.findByIdUsuario2List(sublista);
@@ -144,15 +131,42 @@ public class ResultsController {
 					sublista_fin = aux_lista_consulta.size();
 			}
 		}
+		List<Integer> lista_partidas_id = new ArrayList<>();
+		for (Object[] par : lista_partidas) {
+			lista_partidas_id.add((Integer) par[0]);
+		}
 		
 		/*
-		 * CREAR UN HASH MAP (TIEMPO ACCESO O(1)-O(N)) CON ID USR Y MI PROPIA CLASE
+		 * BUSCAR TODAS LAS ESTADISTICAS EN LAS QUE HAN PARTICIPADO LOS USUARIOS FILTRADOS COMO USUARIO2
+		 */
+		List<Object[]> lista_estadistica = new ArrayList<>();
+		// reiniciar datos para consulta
+		sublista_ini = 0;
+		sublista_fin = 2000;
+		
+		if(lista_partidas_id.size() < 2000)
+			lista_estadistica = statsRepo.findByIdPartidaList(lista_partidas_id);
+		else {
+			System.out.println("Hay que dividir la lista de estadisticas consultadas, hay mas de "+sublista_fin+" parametros. ("+lista_partidas_id.size()+")");
+			while(sublista_fin != lista_partidas_id.size()) {
+				List<Integer> sublista = lista_partidas_id.subList(sublista_ini, sublista_fin);
+				List<Object[]> parcial_lista_estadisticas = statsRepo.findByIdPartidaList(sublista);
+				lista_estadistica.addAll(parcial_lista_estadisticas);
+				
+				sublista_ini = sublista_fin + 1;
+				sublista_fin = sublista_fin + step;
+				if(sublista_fin >= lista_partidas.size())
+					sublista_fin = lista_partidas.size();
+			}
+		}		
+		/*
+		 * CREAR UN HASH MAP (TIEMPO ACCESO O(1)-O(N)) CON ID USR Y myUsuarioObject
 		 */
 		
 		HashMap<Integer, myUsuarioObject> hashDatosUsr = new HashMap<Integer, myUsuarioObject>();
 		
 		for (Object[] par : lista_partidas) {
-		      System.out.println("Id Partida: " + par[0] + ", Id Usuario2: " + par[1]);
+		      //System.out.println("Id Partida: " + par[0] + ", Id Usuario2: " + par[1]);
 		      if(hashDatosUsr.containsKey(par[1])) {
 		    	  /*
 		    	   * Si esta el id del usr en el mapa, se obtiene el objeto myUsuarioObject asociado a ese id.
