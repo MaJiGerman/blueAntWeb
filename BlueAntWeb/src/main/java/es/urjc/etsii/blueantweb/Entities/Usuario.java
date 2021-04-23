@@ -26,6 +26,14 @@ public class Usuario {
 	
 	private String Publicacion,Nombre,Centro,Otros;
 	private int Exp,clasenumero,Edadmeses,Genero,Necesp,Usoprog,Usodisp,Usoplat;
+
+	public String toString() {
+		String return_string = "";
+		return_string += "	Nombre: "+Nombre+"\n";
+		return_string += "	Edad (meses): "+Edadmeses+"\n";
+		return_string += "	Genero: "+Genero+"\n";
+		return return_string;
+	}
 	
 	public int getId() {
 		return Id;

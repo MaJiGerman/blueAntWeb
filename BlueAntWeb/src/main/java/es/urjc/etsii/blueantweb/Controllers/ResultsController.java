@@ -10,8 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.urjc.etsii.blueantweb.Entities.Estadistica;
-import es.urjc.etsii.blueantweb.Entities.Partida;
 import es.urjc.etsii.blueantweb.Entities.Usuario;
 import es.urjc.etsii.blueantweb.Repositories.EstadisticaRepository;
 import es.urjc.etsii.blueantweb.Repositories.PartidaRepository;
@@ -33,6 +31,56 @@ public class ResultsController {
 	public String results(@RequestParam String division, @RequestParam String columna, @RequestParam(required = false, defaultValue = "-1") String genero, 
 			@RequestParam(required = false) String rangoDesde, @RequestParam(required = false) String rangoHasta, 
 			@RequestParam(required = false) String solo_centros, Model model) {
+
+		class myPartidaObject{
+			public int _idPartida;
+			public List<Integer> lista_estadistica_tiempo2;
+			 protected myPartidaObject(int id) {
+				 this._idPartida = id;
+				 this.lista_estadistica_tiempo2 = new ArrayList<>();
+			 }
+			 protected void addEstadistica(Integer e_t2) {
+				 this.lista_estadistica_tiempo2.add(e_t2);
+			 }
+			 public String toString() {
+				 String return_string = "idPartida: " + _idPartida +"\n		[";
+				 for (Integer tiempo : lista_estadistica_tiempo2) {
+					 return_string += ""+ tiempo +", ";
+				 }
+				 return_string = return_string.substring(0, return_string.length() - 2);
+				 return_string += "]\n";
+				 return return_string;
+			 }
+	    }
+		
+		class myUsuarioObject{
+			private int _idUsuario;
+			private Usuario _u;
+			private List<myPartidaObject> _lista_partidas;
+			
+			 protected myUsuarioObject(int id) {
+				 this._idUsuario = id;
+				 this._lista_partidas = new ArrayList<>();
+			 }
+			 protected void setUsuario(Usuario u) {
+				 this._u = u;
+			 }
+			 protected void addmyPartidaObject(myPartidaObject p) {
+				 this._lista_partidas.add(p);
+			 }
+			 public String toString() {
+				 String return_string = "\nidUsuario: " + _idUsuario +"\n{\n";
+				 return_string += _u.toString();
+				 for (int i=0; i<_lista_partidas.size();i++) {
+					 myPartidaObject aux_p = _lista_partidas.get(i);
+					 if (aux_p != null){
+						 return_string += "	"+aux_p.toString();
+					 }
+				 }
+				 return_string += "\n}";
+				 return return_string;
+			 }
+	    }
 		
 		System.out.println("division: " + division);
 		System.out.println("columna: " + columna);
@@ -41,32 +89,7 @@ public class ResultsController {
 		System.out.println("genero: " + genero);
 		System.out.println("Solo Centros: " + solo_centros);
 		
-		List<Usuario> usuarios_final = new ArrayList<>();
 		List<Usuario> usuarios = new ArrayList<>();
-
-		class myPartidaObject{
-			public int _idPartida;
-			public List<Estadistica> lista_estadisticas;
-			 protected myPartidaObject(int id) {
-				 this._idPartida = id;
-				 this.lista_estadisticas = new ArrayList<>();
-			 }
-	    }
-		
-		class myUsuarioObject{
-			public int _idUsuario;
-			public List<myPartidaObject> _lista_partidas;
-			 protected myUsuarioObject(int id) {
-				 this._idUsuario = id;
-				 this._lista_partidas = new ArrayList<>();
-			 }
-			 protected void setmyPartidaObject(List<myPartidaObject> lista_p) {
-				 this._lista_partidas = lista_p;
-			 }
-			 protected void addmyPartidaObject(myPartidaObject p) {
-				 this._lista_partidas.add(p);
-			 }
-	    }
 
 		System.out.println("--------------------------");
 		
@@ -100,13 +123,14 @@ public class ResultsController {
 				return "filter_empty_template";
 			}
 		}
-
-		usuarios_final.addAll(usuarios);
-		List<Integer> aux_lista_consulta = new ArrayList<>();
 		
-		for(int i=0; i<usuarios_final.size(); i++) {
-			Usuario aux_u = usuarios_final.get(i);
+		List<Integer> aux_lista_consulta = new ArrayList<>();
+		HashMap<Integer, Usuario> hashUsuarios = new HashMap<Integer, Usuario>();
+		
+		for(int i=0; i<usuarios.size(); i++) {
+			Usuario aux_u = usuarios.get(i);
 			aux_lista_consulta.add(aux_u.getId());
+			hashUsuarios.put(aux_u.getId(), aux_u);
 		}
 
 		/*
@@ -116,15 +140,18 @@ public class ResultsController {
 		int sublista_ini = 0;
 		int sublista_fin = 2000;
 		int step = 2000;
+		boolean salir = false;
 		
 		if(aux_lista_consulta.size() < 2000)
 			lista_partidas = matchRepo.findByIdUsuario2List(aux_lista_consulta);
 		else {
 			System.out.println("Hay que dividir la lista de partidas consultados, hay mas de "+sublista_fin+" parametros. ("+aux_lista_consulta.size()+")");
-			while(sublista_fin != aux_lista_consulta.size()) {
+			while(salir == false) {
 				List<Integer> sublista = aux_lista_consulta.subList(sublista_ini, sublista_fin);
 				List<Object[]> parcial_lista_partidas = matchRepo.findByIdUsuario2List(sublista);
 				lista_partidas.addAll(parcial_lista_partidas);
+				if(sublista_fin == aux_lista_consulta.size())
+					salir = true;
 				sublista_ini = sublista_fin + 1;
 				sublista_fin = sublista_fin + step;
 				if(sublista_fin >= aux_lista_consulta.size())
@@ -143,22 +170,49 @@ public class ResultsController {
 		// reiniciar datos para consulta
 		sublista_ini = 0;
 		sublista_fin = 2000;
+		salir = false;
 		
 		if(lista_partidas_id.size() < 2000)
 			lista_estadistica = statsRepo.findByIdPartidaList(lista_partidas_id);
 		else {
 			System.out.println("Hay que dividir la lista de estadisticas consultadas, hay mas de "+sublista_fin+" parametros. ("+lista_partidas_id.size()+")");
-			while(sublista_fin != lista_partidas_id.size()) {
+			while(salir == false) {
 				List<Integer> sublista = lista_partidas_id.subList(sublista_ini, sublista_fin);
 				List<Object[]> parcial_lista_estadisticas = statsRepo.findByIdPartidaList(sublista);
 				lista_estadistica.addAll(parcial_lista_estadisticas);
-				
+				if(sublista_fin == lista_partidas_id.size())
+					salir = true;
 				sublista_ini = sublista_fin + 1;
 				sublista_fin = sublista_fin + step;
 				if(sublista_fin >= lista_partidas.size())
 					sublista_fin = lista_partidas.size();
 			}
 		}		
+		
+		HashMap<Integer, myPartidaObject> hashDatosPartidas = new HashMap<Integer, myPartidaObject>();
+		
+		for (Object[] par_e : lista_estadistica) {
+		      if(hashDatosPartidas.containsKey(par_e[0])) {
+		    	  /*
+		    	   * Si esta el id de la partida en el mapa, se obtiene el objeto myPartidaObject asociado a ese id de partida.
+		    	   * Se le añade el tiempo2 de estadistica asociada al idPartida actual a la lista
+		    	   */
+		    	  myPartidaObject p = hashDatosPartidas.get(par_e[0]);
+		    	  Integer e_tiempo2 = (Integer) par_e[1];
+		    	  p.addEstadistica(e_tiempo2);
+		    	  hashDatosPartidas.put((Integer) par_e[0], p);
+		      }else {
+		    	  /*
+		    	   * Si no esta el id de la partida en el mapa, se crea un objeto myPartidaObject nuevo.
+		    	   * Se le añade el tiempo2 de estadistica asociada al idPartida actual a la lista
+		    	   */
+		    	  myPartidaObject p = new myPartidaObject((Integer) par_e[0]);
+		    	  Integer e_tiempo2 = (Integer) par_e[1];
+		    	  p.addEstadistica(e_tiempo2);
+		    	  hashDatosPartidas.put((Integer) par_e[0], p);
+		      }
+		  }
+		
 		/*
 		 * CREAR UN HASH MAP (TIEMPO ACCESO O(1)-O(N)) CON ID USR Y myUsuarioObject
 		 */
@@ -173,28 +227,32 @@ public class ResultsController {
 		    	   * Se le añade a la lista de myPartidaObject la partida actual 
 		    	   */
 		    	  myUsuarioObject u = hashDatosUsr.get(par[1]);
-		    	  myPartidaObject p = new myPartidaObject((Integer) par[0]);
+		    	  myPartidaObject p = hashDatosPartidas.get(par[0]);
 		    	  u.addmyPartidaObject(p);
 		    	  hashDatosUsr.put((Integer) par[1], u);
 		      }else {
 		    	  /*
 		    	   * Si no esta el id del usr en el mapa, se crea un objeto myUsuarioObject nuevo.
-		    	   * Se le añade una partida a la lista de myPartidaObject con las estadisticas vacias
+		    	   * Se le añade a la lista de myPartidaObject la partida actual 
 		    	   */
 		    	  myUsuarioObject u = new myUsuarioObject((Integer) par[1]);
-		    	  myPartidaObject p = new myPartidaObject((Integer) par[0]);
-		    	  List<myPartidaObject> aux_lista_p = new ArrayList<>();
-		    	  aux_lista_p.add(p);
-		    	  u.setmyPartidaObject(aux_lista_p);
+		    	  myPartidaObject p = hashDatosPartidas.get(par[0]);
+		    	  u.addmyPartidaObject(p);
+		    	  u.setUsuario(hashUsuarios.get((Integer) par[1]));
 		    	  hashDatosUsr.put((Integer) par[1], u);
 		      }
 		  }
-
+		
+		for (Integer index: hashDatosUsr.keySet()) {
+		    String value = hashDatosUsr.get(index).toString();
+		    System.out.println(value);
+		}
+		
 		System.out.println("--------------------------");
 		
 		model.addAttribute("name", "DEFAULT");
-		model.addAttribute("resultados", usuarios_final);
-		model.addAttribute("num_resultados", usuarios_final.size());
+		model.addAttribute("resultados", usuarios);
+		model.addAttribute("num_resultados", usuarios.size());
 		return "results_template";
 	}
 }
