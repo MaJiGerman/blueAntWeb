@@ -8,21 +8,7 @@
   <h1>Bienvenido, {{name}}</h1>
   
 	<form action='results' method="post">
-		<div class="form-group">
-			<label for="eje1">Dividir por:</label>
-			<select class="form-control" id="division" name="division">
-					<option value="d_edad">Edad</option>
-					<option value="d_genero">Genero</option>
-			</select>
-		</div>
-		
-		<div class="form-group">
-			<label for="columna">Columna</label>
-			<select class="form-control" id="columna" name="columna">
-					<option value="edad">Edad</option>
-			</select>
-		</div>
-		
+	
 		<div class="form-group">
 			<label for="rangoIni">
 					Desde
@@ -48,6 +34,25 @@
 		<div class="form-group">
 			<label>Incluir solo Centros</label>
 			<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
+		</div>
+		
+		<div class="form-group">
+			<label>Agrupar Resultados por</label>
+			<select class="form-control" id="agrupacion_resultados" name="agrupacion_resultados">
+					<option selected="selected" value="genero">GENERO</option>
+					<option value="edad">EDAD</option>
+					<option value="edad-genero">EDAD y GENERO</option>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<label>Tipo Grafico</label>
+			<select class="form-control" id="tipo_grafico" name="tipo_grafico">
+					<option selected="selected" value="num_jugadores">NUMERO JUGADORES</option>
+					<option value="num_partidas">NUMERO PARTIDAS</option>
+					<option value="media_duracion">MEDIA DURACION PARTIDAS</option>
+					<option value="mediana_duracion">MEDIANA DURACION PARTIDAS</option>
+			</select>
 		</div>
 	
 		<input type='submit' value="Buscar">

@@ -26,111 +26,162 @@ public class ResultsController {
 	
     @Autowired
 	private PartidaRepository matchRepo;
+    
+    class myPartidaObject{
+		public int _idPartida;
+		public List<Integer> lista_estadistica_tiempo2;
+		 protected myPartidaObject(int id) {
+			 this._idPartida = id;
+			 this.lista_estadistica_tiempo2 = new ArrayList<>();
+		 }
+		 protected void addEstadistica(Integer e_t2) {
+			 this.lista_estadistica_tiempo2.add(e_t2);
+		 }
+		 public String toString() {
+			 String return_string = "idPartida: " + _idPartida +"\n		[";
+			 for (Integer tiempo : lista_estadistica_tiempo2) {
+				 return_string += ""+ tiempo +", ";
+			 }
+			 return_string = return_string.substring(0, return_string.length() - 2);
+			 return_string += "]\n";
+			 return return_string;
+		 }
+    }
+	
+	class myUsuarioObject{
+		private int _idUsuario;
+		private Usuario _u;
+		private List<myPartidaObject> _lista_partidas;
+		
+		 protected myUsuarioObject(int id) {
+			 this._idUsuario = id;
+			 this._lista_partidas = new ArrayList<>();
+		 }
+		 protected void setUsuario(Usuario u) {
+			 this._u = u;
+		 }
+		 protected void addmyPartidaObject(myPartidaObject p) {
+			 this._lista_partidas.add(p);
+		 }
+		 public String toString() {
+			 String return_string = "\nidUsuario: " + _idUsuario +"\n{\n";
+			 return_string += _u.toString();
+			 for (int i=0; i<_lista_partidas.size();i++) {
+				 myPartidaObject aux_p = _lista_partidas.get(i);
+				 if (aux_p != null){
+					 return_string += "	"+aux_p.toString();
+				 }
+			 }
+			 return_string += "\n}";
+			 return return_string;
+		 }
+    }
 	
 	@RequestMapping(value = { "/results" })
-	public String results(@RequestParam String division, @RequestParam String columna, @RequestParam(required = false, defaultValue = "-1") String genero, 
+	public String results(@RequestParam(required = false, defaultValue = "-1") String genero, 
 			@RequestParam(required = false) String rangoDesde, @RequestParam(required = false) String rangoHasta, 
-			@RequestParam(required = false) String solo_centros, Model model) {
+			@RequestParam(required = false) String solo_centros, @RequestParam(required = false) String agrupacion_resultados, 
+			@RequestParam(required = false) String tipo_grafico, Model model) {
 
-		class myPartidaObject{
-			public int _idPartida;
-			public List<Integer> lista_estadistica_tiempo2;
-			 protected myPartidaObject(int id) {
-				 this._idPartida = id;
-				 this.lista_estadistica_tiempo2 = new ArrayList<>();
-			 }
-			 protected void addEstadistica(Integer e_t2) {
-				 this.lista_estadistica_tiempo2.add(e_t2);
-			 }
-			 public String toString() {
-				 String return_string = "idPartida: " + _idPartida +"\n		[";
-				 for (Integer tiempo : lista_estadistica_tiempo2) {
-					 return_string += ""+ tiempo +", ";
-				 }
-				 return_string = return_string.substring(0, return_string.length() - 2);
-				 return_string += "]\n";
-				 return return_string;
-			 }
-	    }
-		
-		class myUsuarioObject{
-			private int _idUsuario;
-			private Usuario _u;
-			private List<myPartidaObject> _lista_partidas;
-			
-			 protected myUsuarioObject(int id) {
-				 this._idUsuario = id;
-				 this._lista_partidas = new ArrayList<>();
-			 }
-			 protected void setUsuario(Usuario u) {
-				 this._u = u;
-			 }
-			 protected void addmyPartidaObject(myPartidaObject p) {
-				 this._lista_partidas.add(p);
-			 }
-			 public String toString() {
-				 String return_string = "\nidUsuario: " + _idUsuario +"\n{\n";
-				 return_string += _u.toString();
-				 for (int i=0; i<_lista_partidas.size();i++) {
-					 myPartidaObject aux_p = _lista_partidas.get(i);
-					 if (aux_p != null){
-						 return_string += "	"+aux_p.toString();
-					 }
-				 }
-				 return_string += "\n}";
-				 return return_string;
-			 }
-	    }
-		
-		System.out.println("division: " + division);
-		System.out.println("columna: " + columna);
+		System.out.println("--------------------------");
+		System.out.println("DATOS DE CONSULTA");
 		System.out.println("rangoDesde: " + rangoDesde);
 		System.out.println("rangoHasta: " + rangoHasta);
 		System.out.println("genero: " + genero);
 		System.out.println("Solo Centros: " + solo_centros);
+		System.out.println("Agrupar resultados por: " + agrupacion_resultados);
+		System.out.println("Tipo grafico: " + tipo_grafico);
+		
 		
 		List<Usuario> usuarios = new ArrayList<>();
-
-		System.out.println("--------------------------");
 		
-		if(columna.equals("edad"))
-		{	
-			System.out.println("SE BUSCA POR EDAD");
-			if(genero.equals("0") || genero.equals("1")){ 
-				if(solo_centros != null) {
-					usuarios = userRepo.findByAgeAndGenderAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
-				}else {
-					usuarios = userRepo.findByAgeAndGender(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
-				}
+		System.out.println("*******************");
+		if(genero.equals("0") || genero.equals("1")){ 
+			if(solo_centros != null) {
+				usuarios = userRepo.findByAgeAndGenderAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
 			}else {
-				if(solo_centros != null) {
-					usuarios = userRepo.findByAgeAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
-				}else {
-					usuarios = userRepo.findByAge(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
-				}
+				usuarios = userRepo.findByAgeAndGender(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
 			}
-			if (!usuarios.isEmpty() && usuarios.size() > 0) {
-				System.out.println("se han encontrado "+usuarios.size()+" resultados");
-			}
-			else{
-				model.addAttribute("filtro_edad_ini", rangoDesde);
-				model.addAttribute("filtro_edad_fin", rangoHasta);
-				model.addAttribute("genero", genero);
-				if(solo_centros != null)
-					model.addAttribute("centros", "SI");
-				else
-					model.addAttribute("centros", "NO");
-				return "filter_empty_template";
+		}else {
+			if(solo_centros != null) {
+				usuarios = userRepo.findByAgeAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
+			}else {
+				usuarios = userRepo.findByAge(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
 			}
 		}
+		if (!usuarios.isEmpty() && usuarios.size() > 0) {
+			System.out.println("se han encontrado "+usuarios.size()+" resultados");
+		}
+		else{
+			model.addAttribute("filtro_edad_ini", rangoDesde);
+			model.addAttribute("filtro_edad_fin", rangoHasta);
+			model.addAttribute("genero", genero);
+			if(solo_centros != null)
+				model.addAttribute("centros", "SI");
+			else
+				model.addAttribute("centros", "NO");
+			return "filter_empty_template";
+		}
+	
 		
 		List<Integer> aux_lista_consulta = new ArrayList<>();
 		HashMap<Integer, Usuario> hashUsuarios = new HashMap<Integer, Usuario>();
 		
+		
+		
+		List<Integer> aux_lista_masculino = new ArrayList<>();
+		List<Integer> aux_lista_femenino = new ArrayList<>();
+		HashMap<String, List<Integer>> hashResultadosDivididos = new HashMap<String, List<Integer>>();
+
 		for(int i=0; i<usuarios.size(); i++) {
 			Usuario aux_u = usuarios.get(i);
+			
+			if(aux_u.getGenero() == 0)
+				aux_lista_masculino.add(aux_u.getId());
+			else if(aux_u.getGenero() == 1)	
+				aux_lista_femenino.add(aux_u.getId());
+			
+			if(agrupacion_resultados.equals("edad") || agrupacion_resultados.equals("edad-genero")){				
+				int edadMes = aux_u.getEdadMeses();
+				int resto = edadMes % 12;
+				if(resto != 0) 
+					resto = 1;
+				int edadAnno = (edadMes / 12) + resto;
+				String tag_genero = "_A";
+				
+				if(agrupacion_resultados.equals("edad-genero")){
+					if(aux_u.getGenero() == 0)
+						tag_genero = "_M";
+					else if(aux_u.getGenero() == 1)	
+						tag_genero = "_F";
+				}
+				
+				String keyEdad = edadAnno + tag_genero;
+				
+				if(hashResultadosDivididos.containsKey(keyEdad)) {
+					List<Integer> l = hashResultadosDivididos.get(keyEdad);
+					l.add(aux_u.getId());
+					hashResultadosDivididos.put(keyEdad, l);
+				}else {
+					List<Integer> l = new ArrayList<>();
+					l.add(aux_u.getId());
+					hashResultadosDivididos.put(keyEdad, l);
+				}
+			}
 			aux_lista_consulta.add(aux_u.getId());
 			hashUsuarios.put(aux_u.getId(), aux_u);
+		}
+		
+		/*
+		System.out.println("DIVISION USUARIOS: " + hashResultadosDivididos.keySet());
+		
+		for (String key: hashResultadosDivididos.keySet()) {
+		    System.out.println(key + "=" + hashResultadosDivididos.get(key));
+		}
+		*/
+		
+		if(tipo_grafico.equals("num_jugadores")){
+			
 		}
 
 		/*
@@ -242,13 +293,15 @@ public class ResultsController {
 		    	  hashDatosUsr.put((Integer) par[1], u);
 		      }
 		  }
-		
+		// MOSTRAR LOS DATOS OBTENIDOS
+		/*
 		for (Integer index: hashDatosUsr.keySet()) {
 		    String value = hashDatosUsr.get(index).toString();
 		    System.out.println(value);
 		}
+		*/
 		
-		System.out.println("--------------------------");
+		System.out.println("*******************");
 		
 		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios);
