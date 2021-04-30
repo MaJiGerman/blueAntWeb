@@ -10,21 +10,21 @@ public interface UsuarioRepository  extends JpaRepository<Usuario, Long>{
 	
 	Usuario findById(long id);
 
-	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Nombre IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Nombre IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByAge(int min, int max);
 
-	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByAgeAndCentre(int min, int max);
 
-	@Query(value = "SELECT * FROM Usuario WHERE Genero = ?1 AND Nombre IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Genero = ?1 AND Nombre IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByGender(int gender);
 
-	@Query(value = "SELECT * FROM Usuario WHERE Genero = ?1 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Genero = ?1 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByGenderAndCentre(int gender);
 	
-	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Genero = ?3 AND Nombre IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Genero = ?3 AND Nombre IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByAgeAndGender(int min, int max, int gender);
 	
-	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Genero = ?3 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM Usuario WHERE Edadmeses BETWEEN ?1 AND ?2 AND Genero = ?3 AND Nombre IS NOT NULL AND Centro <> 'NA' AND Centro IS NOT NULL ORDER BY Edadmeses ASC", nativeQuery = true)
 	List<Usuario> findByAgeAndGenderAndCentre(int min, int max, int gender);
 }
