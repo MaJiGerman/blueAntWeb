@@ -172,13 +172,13 @@ public class ResultsController {
 			hashUsuarios.put(aux_u.getId(), aux_u);
 		}
 		
-		/*
+		
 		System.out.println("DIVISION USUARIOS: " + hashResultadosDivididos.keySet());
 		
 		for (String key: hashResultadosDivididos.keySet()) {
 		    System.out.println(key + "=" + hashResultadosDivididos.get(key));
 		}
-		*/
+		
 		
 		if(tipo_grafico.equals("num_jugadores")){
 			
@@ -303,8 +303,34 @@ public class ResultsController {
 		
 		System.out.println("*******************");
 		
+		List<Integer> datos = new ArrayList<>();
+		List<String> nombres = new ArrayList<>();
+		List<List<Integer>> BB = new ArrayList<>();
+		nombres.add("Genero");
+		nombres.add("Masculino");
+		//nombres.add("Femenino");
+		datos.add(11);
+		datos.add(6);
+		//datos.add(7);
+		BB.add(datos);
+		datos = new ArrayList<>();
+		datos.add(15);
+		datos.add(21);
+		//datos.add(7);
+		BB.add(datos);
+		datos = new ArrayList<>();
+		datos.add(13);
+		datos.add(15);
+		//datos.add(18);
+		BB.add(datos);
+		
+		String titulo = "GRAFICA AAAA";
+		
 		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios);
+		model.addAttribute("titulo_grafica", titulo);
+		model.addAttribute("datos_grafica", BB);
+		model.addAttribute("nombres_grafica", nombres);
 		model.addAttribute("num_resultados", usuarios.size());
 		return "results_template";
 	}

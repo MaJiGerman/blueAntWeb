@@ -2,28 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current', {'packages':['bar']});
+        window.onload = function drawChart() {
+	    	var final = []
+	    	
+	    	var aux_titulo = document.getElementById("titulo_grafica").innerHTML;
+	    	
+	    	var aux_nombres = document.getElementById("nombres_grafica").innerHTML;
+	    	aux_nombres = aux_nombres.substring(1);
+	    	aux_nombres = aux_nombres.substring(-1);
+	    	aux_nombres = aux_nombres.split(", ");
+	    	aux_nombres_2 = []
+	    	
+	    	for (var i = 0; i < aux_nombres.length; i++) {
+			   var tmp = aux_nombres[i]
+			   tmp = tmp.trim()
+			   while(tmp.charAt(0) === '[')
+				{
+				 tmp = tmp.substring(1);
+				}
+			   while(tmp.charAt(tmp.length-1) === ']')
+				{
+				 tmp = tmp.substring(0, tmp.length - 1);
+				}
+				aux_nombres_2.push(tmp)
+			}
+			final.push(aux_nombres_2)
+	    	
+	    	var aux = document.getElementById("datos_grafica").innerHTML;
+	    	var aux2 = aux.split("],");
+	    	
+	    	for (var i = 0; i < aux2.length; i++) {
+			   var tmp = aux2[i]
+			   //console.log("pre filtrado " + tmp)
+			   while(tmp.charAt(0) === '[' || tmp.charAt(0) === ' ')
+				{
+				 tmp = tmp.substring(1);
+				}
+			   while(tmp.charAt(tmp.length-1) === ']' || tmp.charAt(0) === ' ')
+				{
+				
+				 tmp = tmp.slice(0, -1);
+				}
+				tmp = tmp.split(", ")
+				//console.log("añadiendo " + tmp)
+				var _final = []
+				for (var j = 0; j < tmp.length; j++) {
+					_final.push(parseInt(tmp[j], 10))
+				}
+				final.push(_final)
+			}
+	    	console.log(final);
+	    	
+	    	var data = google.visualization.arrayToDataTable(final);
 
+	        var options = {
+	          chart: {
+	            title: aux_titulo
+	          }
+	        };
+	
+	        var chart = new google.charts.Bar(document.getElementById('chart'));
+	
+	        chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    </script>
 </head>
 <body>
   <h1>Hola, {{name}}</h1>
+  <span id="titulo_grafica" style="display: none;">{{titulo_grafica}}</span>
+  <span id="datos_grafica" style="display: none;">{{datos_grafica}}</span>
+  <span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
+  <div id="chart"></div>
   <form action='stats' method="post">
 	<input type='submit' value="Stats">
   </form>
   <br>
- 	<table>
- 		<caption>CONSULTA POR EDAD ({{num_resultados}} resultados)</caption>
-		<tr>
-		  <th>Nombre</th>
-		  <th>Genero</th>
-		  <th>Edad</th>
-		</tr>
-		{{#resultados}}
-			<tr>
-		  	<td>{{getNombre}}</td>
-		  	<td>{{getGenero}}</td>
-		  	<td>{{getEdadMeses}}</td>
-			</tr>
-		{{/resultados}}
-	</table>
+  <div>CONSULTA POR EDAD ({{num_resultados}} resultados)</div>
 </body>
 </html>
