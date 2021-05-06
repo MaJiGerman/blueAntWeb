@@ -37,6 +37,9 @@ public class ResultsController {
 		 protected void addEstadistica(Integer e_t2) {
 			 this.lista_estadistica_tiempo2.add(e_t2);
 		 }
+		 protected List<Integer> getEstadistica(){
+			 return this.lista_estadistica_tiempo2;
+		 }
 		 public String toString() {
 			 String return_string = "idPartida: " + _idPartida +"\n		[";
 			 for (Integer tiempo : lista_estadistica_tiempo2) {
@@ -62,6 +65,9 @@ public class ResultsController {
 		 }
 		 protected void addmyPartidaObject(myPartidaObject p) {
 			 this._lista_partidas.add(p);
+		 }
+		 protected List<myPartidaObject> getmyPartidaObject() {
+			 return this._lista_partidas;
 		 }
 		 public String toString() {
 			 String return_string = "\nidUsuario: " + _idUsuario +"\n{\n";
@@ -219,23 +225,22 @@ public class ResultsController {
 		for (Integer key: hashResultadosDivididos.keySet()) {
 		    System.out.println(key + "=" + hashResultadosDivididos.get(key));
 		}
-		
-		for (Integer key: hashResultadosDivididos.keySet()) {
-			List<Integer> aux_lista = new ArrayList<>();
-			List<List<Integer>> aux_lista_data = new ArrayList<>();
-			
-			aux_lista.add(key);
-			aux_lista_data = hashResultadosDivididos.get(key); 
-			for(int i=0; i<aux_lista_data.size(); i++) {
-				aux_lista.add(aux_lista_data.get(i).size());
-			}
-			final_datos_grafica.add(aux_lista);
-		}
-		
+				
 		/*
 		 * SI SOLO SE QUIERE EL NUMERO DE JUGADORES, EVITAMOS HACER CONSULTAS INNECESARIAS
 		 */
 		if(tipo_grafico.equals("num_jugadores")){
+			for (Integer key: hashResultadosDivididos.keySet()) {
+				List<Integer> aux_lista = new ArrayList<>();
+				List<List<Integer>> aux_lista_data = new ArrayList<>();
+				
+				aux_lista.add(key);
+				aux_lista_data = hashResultadosDivididos.get(key); 
+				for(int i=0; i<aux_lista_data.size(); i++) {
+					aux_lista.add(aux_lista_data.get(i).size());
+				}
+				final_datos_grafica.add(aux_lista);
+			}
 			model.addAttribute("name", "DEFAULT");
 			model.addAttribute("resultados", usuarios);
 			model.addAttribute("titulo_grafica", final_titulo_grafica);
@@ -363,33 +368,56 @@ public class ResultsController {
 		*/
 		
 		System.out.println("*******************");
+
+		List<List<Double>> final_datos_grafica_2 = new ArrayList<>();
 		
-		List<String> nombres = new ArrayList<>();
-		List<Integer> datos = new ArrayList<>();
-		List<List<Integer>> BB = new ArrayList<>();
-		nombres.add("Genero");
-		nombres.add("Masculino");
-		nombres.add("Femenino");
-		datos.add(11);
-		datos.add(6);
-		datos.add(7);
-		BB.add(datos);
-		datos = new ArrayList<>();
-		datos.add(15);
-		datos.add(21);
-		datos.add(7);
-		BB.add(datos);
-		datos = new ArrayList<>();
-		datos.add(13);
-		datos.add(15);
-		datos.add(18);
-		BB.add(datos);
+		for (Integer key: hashResultadosDivididos.keySet()) {
+			List<Double> aux_lista = new ArrayList<>();
+			List<List<Integer>> aux_lista_data = new ArrayList<>();
+			double num_partidas = 0;
+			
+			aux_lista.add((double) key);
+			aux_lista_data = hashResultadosDivididos.get(key);
+			
+			// por cada una de las listas de usuarios (separados)
+			for(int i=0; i<aux_lista_data.size(); i++) {
+				num_partidas = 0;
+				List<Integer> aux_lista_usr_id = aux_lista_data.get(i);
+				// por cada uno de los usuarios
+				for(int j=0; j<aux_lista_usr_id.size(); j++) {
+					int id_usr = aux_lista_usr_id.get(j);
+					if(hashDatosUsr.containsKey(id_usr)){
+						myUsuarioObject u = hashDatosUsr.get(id_usr);
+						System.out.println(u.toString());
+						List<myPartidaObject> lista_myP = u.getmyPartidaObject();
+						// por cada una de las partidas
+						for(int k=0; k<lista_myP.size(); k++) {
+							myPartidaObject p = lista_myP.get(k);
+							if((p != null)) {
+								System.out.println(p.toString());
+								List<Integer> e = p.getEstadistica();
+								num_partidas += e.size();
+							}
+						}
+					}
+				}
+				System.out.println("Lista "+i+": "+num_partidas);
+				if(tipo_grafico.equals("num_partidas")){
+					aux_lista.add(num_partidas);
+				}
+			}
+			
+			
+			
+			final_datos_grafica_2.add(aux_lista);
+		}
 		
+
 		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios);
 		model.addAttribute("titulo_grafica", final_titulo_grafica);
-		model.addAttribute("datos_grafica", BB);
-		model.addAttribute("nombres_grafica", nombres);
+		model.addAttribute("datos_grafica", final_datos_grafica_2);
+		model.addAttribute("nombres_grafica", final_nombres_grafica);
 		model.addAttribute("num_resultados", usuarios.size());
 		return "results_template";
 	}
