@@ -5,7 +5,7 @@
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 	<script type="text/javascript">
-		google.charts.load('current', {'packages':['bar']});
+		google.charts.load('current', {'packages':['corechart']});
         window.onload = function drawChart() {
 	    	var final = []
 	    	
@@ -58,15 +58,20 @@
 	    	console.log(final);
 	    	
 	    	var data = google.visualization.arrayToDataTable(final);
-
+			var view = new google.visualization.DataView(data);
+			
 	        var options = {
-	          chart: {
-	            title: aux_titulo
+	          title: aux_titulo,
+	          explorer: {
+	          	actions: ["dragToZoom", "rightClickToReset"],
+	            axis: 'horizontal',
+	            keepInBounds: true,
+	            maxZoomIn: 4
 	          }
 	        };
 	        
 			var chart_area = document.getElementById('chart_position');
-  			var chart = new google.charts.Bar(chart_area);
+  			var chart = new google.visualization.ColumnChart(chart_area);
 	        
 	        var btnSave = document.getElementById('save-pdf');
 			google.visualization.events.addListener(chart, 'ready', function () {
@@ -79,7 +84,7 @@
 			    doc.save('chart.pdf');
 			  }, false);
 	
-	        chart.draw(data, google.charts.Bar.convertOptions(options));
+	        chart.draw(view, options);
 	        			
         }
     </script>
