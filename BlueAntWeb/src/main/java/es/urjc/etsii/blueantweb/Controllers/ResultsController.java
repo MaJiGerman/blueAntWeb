@@ -94,8 +94,12 @@ public class ResultsController {
 		
 		
 		List<Usuario> usuarios = new ArrayList<>();
+		String final_titulo_grafica = "";
+		List<List<Integer>> final_datos_grafica = new ArrayList<>();
+		List<String> final_nombres_grafica = new ArrayList<>();
 		
 		System.out.println("*******************");
+		
 		if(genero.equals("0") || genero.equals("1")){ 
 			if(solo_centros != null) {
 				usuarios = userRepo.findByAgeAndGenderAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
@@ -122,52 +126,89 @@ public class ResultsController {
 				model.addAttribute("centros", "NO");
 			return "filter_empty_template";
 		}
-	
+
+		if(tipo_grafico.equals("num_jugadores")) {
+			final_titulo_grafica += "NUMERO DE JUGADORES";
+		}else if(tipo_grafico.equals("num_partidas")) {
+			final_titulo_grafica += "NUMERO DE PARTIDAS JUGADAS";
+		}else if(tipo_grafico.equals("media_duracion")) {
+			final_titulo_grafica += "MEDIA DURACION DE LAS PARTIDAS";
+		}else if(tipo_grafico.equals("mediana_duracion")) {
+			final_titulo_grafica += "MEDIANA DURACION DE LAS PARTIDAS";
+		}
+		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " MESES";
+		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase();
+		
+		if(agrupacion_resultados.equals("edad")) {
+			final_nombres_grafica.add("Genero");
+			final_nombres_grafica.add("Ambos");
+		}else {
+			final_nombres_grafica.add("Genero");
+			final_nombres_grafica.add("Masculino");
+			final_nombres_grafica.add("Femenino");
+		}
 		
 		List<Integer> aux_lista_consulta = new ArrayList<>();
 		HashMap<Integer, Usuario> hashUsuarios = new HashMap<Integer, Usuario>();
 		
-		
-		
-		List<Integer> aux_lista_masculino = new ArrayList<>();
-		List<Integer> aux_lista_femenino = new ArrayList<>();
-		HashMap<String, List<Integer>> hashResultadosDivididos = new HashMap<String, List<Integer>>();
+		HashMap<Integer, List<List<Integer>>> hashResultadosDivididos = new HashMap<Integer, List<List<Integer>>>();
 
 		for(int i=0; i<usuarios.size(); i++) {
 			Usuario aux_u = usuarios.get(i);
-			
-			if(aux_u.getGenero() == 0)
-				aux_lista_masculino.add(aux_u.getId());
-			else if(aux_u.getGenero() == 1)	
-				aux_lista_femenino.add(aux_u.getId());
-			
-			if(agrupacion_resultados.equals("edad") || agrupacion_resultados.equals("edad-genero")){				
+
+			int edadAnno = -1;
+			if(agrupacion_resultados.equals("genero")) {
+				if(aux_u.getGenero() == 0)
+					edadAnno = 0;
+				else if(aux_u.getGenero() == 1)	
+					edadAnno = 0;
+			}else {
 				int edadMes = aux_u.getEdadMeses();
 				int resto = edadMes % 12;
 				if(resto != 0) 
 					resto = 1;
-				int edadAnno = (edadMes / 12) + resto;
-				String tag_genero = "_A";
-				
-				if(agrupacion_resultados.equals("edad-genero")){
-					if(aux_u.getGenero() == 0)
-						tag_genero = "_M";
-					else if(aux_u.getGenero() == 1)	
-						tag_genero = "_F";
-				}
-				
-				String keyEdad = edadAnno + tag_genero;
-				
-				if(hashResultadosDivididos.containsKey(keyEdad)) {
-					List<Integer> l = hashResultadosDivididos.get(keyEdad);
-					l.add(aux_u.getId());
-					hashResultadosDivididos.put(keyEdad, l);
-				}else {
-					List<Integer> l = new ArrayList<>();
-					l.add(aux_u.getId());
-					hashResultadosDivididos.put(keyEdad, l);
-				}
+				edadAnno = (edadMes / 12) + resto;
 			}
+			
+			Integer keyEdad = edadAnno;
+			
+			if(hashResultadosDivididos.containsKey(keyEdad)) {
+				List<List<Integer>> l = hashResultadosDivididos.get(keyEdad);
+				if(agrupacion_resultados.equals("edad-genero") || agrupacion_resultados.equals("genero")){
+					List<Integer> l_m = l.get(0);
+					List<Integer> l_f = l.get(1);
+					if(aux_u.getGenero() == 0) {
+						l_m.add(aux_u.getId());
+						l.set(0,l_m);
+					}else if(aux_u.getGenero() == 1) {	
+						l_f.add(aux_u.getId());
+						l.set(1,l_f);
+					}
+				}else {
+					List<Integer> l_a = l.get(0);
+					l_a.add(aux_u.getId());
+					l.set(0,l_a);
+				}
+				hashResultadosDivididos.put(keyEdad, l);
+			}else {
+				List<List<Integer>> l = new ArrayList<>();
+				if(agrupacion_resultados.equals("edad-genero") || agrupacion_resultados.equals("genero")){
+					List<Integer> l_m = new ArrayList<>();
+					List<Integer> l_f = new ArrayList<>();
+					if(aux_u.getGenero() == 0)
+						l_m.add(aux_u.getId());
+					else if(aux_u.getGenero() == 1)	
+						l_f.add(aux_u.getId());
+					l.add(l_m);
+					l.add(l_f);
+				}else {
+					List<Integer> l_a = new ArrayList<>();
+					l_a.add(aux_u.getId());
+					l.add(l_a);
+				}
+				hashResultadosDivididos.put(keyEdad, l);
+			}
+			
 			aux_lista_consulta.add(aux_u.getId());
 			hashUsuarios.put(aux_u.getId(), aux_u);
 		}
@@ -175,13 +216,33 @@ public class ResultsController {
 		
 		System.out.println("DIVISION USUARIOS: " + hashResultadosDivididos.keySet());
 		
-		for (String key: hashResultadosDivididos.keySet()) {
+		for (Integer key: hashResultadosDivididos.keySet()) {
 		    System.out.println(key + "=" + hashResultadosDivididos.get(key));
 		}
 		
-		
-		if(tipo_grafico.equals("num_jugadores")){
+		for (Integer key: hashResultadosDivididos.keySet()) {
+			List<Integer> aux_lista = new ArrayList<>();
+			List<List<Integer>> aux_lista_data = new ArrayList<>();
 			
+			aux_lista.add(key);
+			aux_lista_data = hashResultadosDivididos.get(key); 
+			for(int i=0; i<aux_lista_data.size(); i++) {
+				aux_lista.add(aux_lista_data.get(i).size());
+			}
+			final_datos_grafica.add(aux_lista);
+		}
+		
+		/*
+		 * SI SOLO SE QUIERE EL NUMERO DE JUGADORES, EVITAMOS HACER CONSULTAS INNECESARIAS
+		 */
+		if(tipo_grafico.equals("num_jugadores")){
+			model.addAttribute("name", "DEFAULT");
+			model.addAttribute("resultados", usuarios);
+			model.addAttribute("titulo_grafica", final_titulo_grafica);
+			model.addAttribute("datos_grafica", final_datos_grafica);
+			model.addAttribute("nombres_grafica", final_nombres_grafica);
+			model.addAttribute("num_resultados", usuarios.size());
+			return "results_template";
 		}
 
 		/*
@@ -303,32 +364,30 @@ public class ResultsController {
 		
 		System.out.println("*******************");
 		
-		List<Integer> datos = new ArrayList<>();
 		List<String> nombres = new ArrayList<>();
+		List<Integer> datos = new ArrayList<>();
 		List<List<Integer>> BB = new ArrayList<>();
 		nombres.add("Genero");
 		nombres.add("Masculino");
-		//nombres.add("Femenino");
+		nombres.add("Femenino");
 		datos.add(11);
 		datos.add(6);
-		//datos.add(7);
+		datos.add(7);
 		BB.add(datos);
 		datos = new ArrayList<>();
 		datos.add(15);
 		datos.add(21);
-		//datos.add(7);
+		datos.add(7);
 		BB.add(datos);
 		datos = new ArrayList<>();
 		datos.add(13);
 		datos.add(15);
-		//datos.add(18);
+		datos.add(18);
 		BB.add(datos);
-		
-		String titulo = "GRAFICA AAAA";
 		
 		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios);
-		model.addAttribute("titulo_grafica", titulo);
+		model.addAttribute("titulo_grafica", final_titulo_grafica);
 		model.addAttribute("datos_grafica", BB);
 		model.addAttribute("nombres_grafica", nombres);
 		model.addAttribute("num_resultados", usuarios.size());
