@@ -373,41 +373,82 @@ public class ResultsController {
 		
 		for (Integer key: hashResultadosDivididos.keySet()) {
 			List<Double> aux_lista = new ArrayList<>();
+			List<Integer> aux_lista_todas_partidas = new ArrayList<>();
 			List<List<Integer>> aux_lista_data = new ArrayList<>();
 			double num_partidas = 0;
 			
 			aux_lista.add((double) key);
 			aux_lista_data = hashResultadosDivididos.get(key);
 			
+			System.out.println("CALCULANDO EN EL GRUPO "+ key);
+			
 			// por cada una de las listas de usuarios (separados)
 			for(int i=0; i<aux_lista_data.size(); i++) {
 				num_partidas = 0;
+				aux_lista_todas_partidas = new ArrayList<>();
 				List<Integer> aux_lista_usr_id = aux_lista_data.get(i);
 				// por cada uno de los usuarios
 				for(int j=0; j<aux_lista_usr_id.size(); j++) {
 					int id_usr = aux_lista_usr_id.get(j);
 					if(hashDatosUsr.containsKey(id_usr)){
 						myUsuarioObject u = hashDatosUsr.get(id_usr);
-						System.out.println(u.toString());
 						List<myPartidaObject> lista_myP = u.getmyPartidaObject();
 						// por cada una de las partidas
 						for(int k=0; k<lista_myP.size(); k++) {
 							myPartidaObject p = lista_myP.get(k);
 							if((p != null)) {
-								System.out.println(p.toString());
 								List<Integer> e = p.getEstadistica();
+								aux_lista_todas_partidas.addAll(e);
 								num_partidas += e.size();
 							}
 						}
 					}
 				}
-				System.out.println("Lista "+i+": "+num_partidas);
+				// Calcular el numero de partidas de esta listas de usuarios
 				if(tipo_grafico.equals("num_partidas")){
 					aux_lista.add(num_partidas);
 				}
+				// Calcular la media de esta listas de usuarios
+				if(tipo_grafico.equals("media_duracion")){
+					double suma = 0;
+					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+						suma += aux_lista_todas_partidas.get(index);
+					}
+					double media = suma / aux_lista_todas_partidas.size();
+					//System.out.println("MEDIA: "+suma+" / "+aux_lista_todas_partidas.size()+" = "+media);
+					aux_lista.add(media);
+				}
+				// Calcular la desviacion media de esta listas de usuarios
+				if(tipo_grafico.equals("des_media_duracion")){
+					double suma = 0;
+					double desviacion_media = 0;
+					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+						suma += aux_lista_todas_partidas.get(index);
+					}
+					double media = suma / aux_lista_todas_partidas.size();
+					
+					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+						desviacion_media += Math.pow(aux_lista_todas_partidas.get(index) - media, 2);
+					}
+					desviacion_media = Math.sqrt(desviacion_media / aux_lista_todas_partidas.size());
+					aux_lista.add(desviacion_media);
+				}
+				// Calcular la mediana de esta listas de usuarios
+				if(tipo_grafico.equals("mediana_duracion")){
+					aux_lista_todas_partidas.sort(null);
+					List<Integer> aux_l = aux_lista_todas_partidas;
+					//System.out.println(aux_l);
+					double mediana = 0;
+					if(aux_l.size() > 0) {
+						if (aux_l.size() % 2 == 0)
+							mediana = (aux_l.get(aux_l.size()/2) + aux_l.get((aux_l.size() - 1)/2)) / 2;
+						else
+							mediana = aux_l.get(aux_l.size()/2);
+					}
+					//System.out.println("MEDIANA: "+mediana);
+					aux_lista.add(mediana);
+				}
 			}
-			
-			
 			
 			final_datos_grafica_2.add(aux_lista);
 		}
