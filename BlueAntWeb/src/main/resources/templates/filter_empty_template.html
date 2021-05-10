@@ -1,16 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-</head>
-<body>
-  <h1>El filtrado ha devuelto 0 resultados. Datos Usados:</h1>
-  <p>EDAD (meses): {{filtro_edad_ini}} - {{filtro_edad_fin}}</p>
-  <p>GENERO: {{genero}}</p>
-  <p>SOLO CENTROS: {{centros}}</p>
-  <form action='stats' method="post">
-	<input type='submit' value="Stats">
-  </form>
-</body>
+    <title>blueAntWeb Home</title>
+    
+	<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body style="background-image: url('images/web-bg.jpg')">
+    <div class="container-fluid">
+	<div class="row" style="margin-top:2%">
+		<div class="col-md-4">
+			<p>EL FILTRADO A DEVUELTO 0 RESULTADOS</p>
+			<p>DATOS USADOS:</p>
+			<p>	RANGO DESDE (meses): {{filtro_edad_ini}}</p>
+			<p>	RANGO HASTA (meses): {{filtro_edad_fin}}</p>
+			<p>	GENERO: {{genero}}</p>
+			<p>	SOLO CENTROS: {{centros}}</p>
+			
+			<form action='stats' method="post">
+				<button type="submit" value="Stats" class="btn btn-primary" >
+					Volver al filtro
+				</button>
+			</form>
+		</div>
+		<div class="col-md-4 .align-items-center">
+		</div>
+		</div>
+		<div class="col-md-4">
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
 </html>

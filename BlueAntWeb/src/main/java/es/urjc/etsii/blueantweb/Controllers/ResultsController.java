@@ -241,7 +241,6 @@ public class ResultsController {
 				}
 				final_datos_grafica.add(aux_lista);
 			}
-			model.addAttribute("name", "DEFAULT");
 			model.addAttribute("resultados", usuarios);
 			model.addAttribute("titulo_grafica", final_titulo_grafica);
 			model.addAttribute("datos_grafica", final_datos_grafica);
@@ -453,8 +452,6 @@ public class ResultsController {
 			final_datos_grafica_2.add(aux_lista);
 		}
 		
-
-		model.addAttribute("name", "DEFAULT");
 		model.addAttribute("resultados", usuarios);
 		model.addAttribute("titulo_grafica", final_titulo_grafica);
 		model.addAttribute("datos_grafica", final_datos_grafica_2);

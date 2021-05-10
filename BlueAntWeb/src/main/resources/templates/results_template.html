@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>blueAntWeb</title>
+    
+	<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 	<script type="text/javascript">
@@ -79,9 +88,11 @@
 			  });
 			  
 			  btnSave.addEventListener('click', function () {
-			    var doc = new jsPDF();
-			    doc.addImage(chart.getImageURI(), 0, 0);
-			    doc.save('chart.pdf');
+			    var doc_download = new jsPDF("l", "mm", "a4");
+			    var width = doc_download.internal.pageSize.width;
+				var height = doc_download.internal.pageSize.height;
+			    doc_download.addImage(chart.getImageURI(), 0, 0, width, 3*height/4, null, null, -90);
+			    doc_download.save('chart.pdf');
 			  }, false);
 	
 	        chart.draw(view, options);
@@ -90,16 +101,22 @@
     </script>
 </head>
 <body>
-  <h1>Hola, {{name}}</h1>
-  <span id="titulo_grafica" style="display: none;">{{titulo_grafica}}</span>
-  <span id="datos_grafica" style="display: none;">{{datos_grafica}}</span>
-  <span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
-  <input id="save-pdf" type="button" value="Save as PDF" disabled />
-  <div id="chart_position" style="width: 90%; height: 75vh;"></div>
-  <form action='stats' method="post">
-	<input type='submit' value="Stats">
-  </form>
-  <br>
-  <div>CONSULTA POR EDAD ({{num_resultados}} resultados)</div>
+	<span id="titulo_grafica" style="display: none;">{{titulo_grafica}}</span>
+	<span id="datos_grafica" style="display: none;">{{datos_grafica}}</span>
+	<span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
+	<div style="margin-top:2%"></div>
+	<button class="btn btn-primary" id="save-pdf" type="button" value="Save as PDF" disabled>EXPORTAR A PDF</button>
+	<div id="chart_position" style="width: 90%; height: 75vh;"></div>
+	<form action='stats' method="post">
+		<button type="submit" value="Stats" class="btn btn-primary" >
+				VOLVER A FILTRAR
+		</button>
+	</form>
+	<br>
+	<div>LA CONSULTA HA DEVUELTO {{num_resultados}} USUARIOS</div>
+	
+	<script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
