@@ -14,64 +14,76 @@
   </head>
   <body style="background-image: url('images/web-bg.jpg')">
     <div class="container-fluid">
-	<div class="row" style="margin-top:7%">
-		<div class="col-md-4">
+	<div class="row" style="margin-top:4%">
+	<div class="col-md-12">
+		<form action='results' method="post">
+		<div class="row">
+			<div class="col-md-1">
+			</div>
+			<div class="col-md-5">
+					<div class="form-group">
+						<label for="rangoIni">
+								RANGO DESDE *
+						</label>
+						<input type="number" min="0" required class="form-control" id="rangoIni" name="rangoDesde">
+					</div>
+					
+					<div class="form-group">
+						<label for="rangoFin">
+								RANGO HASTA *
+						</label>
+						<input type="number" min="0" required class="form-control" id="rangoFin" name="rangoHasta">
+					</div>
+					
+					<div class="form-group">
+						<label>GENERO:</label><br>
+						<input type="radio" id="ambos" name="genero" value="2" checked>
+					  	<label for="ambos">AMBOS</label><br>
+			  			<input type="radio" id="masc" name="genero" value="0">
+				  		<label for="masc">MASCULINO</label><br>
+					  	<input type="radio" id="fem" name="genero" value="1">
+					  	<label for="fem">FEMENINO</label>
+					</div>
+					
+					<div class="form-group">
+						<label>INCLUIR SOLO CENTROS</label>
+						<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
+					</div>
+			</div>
+			<div class="col-md-5">
+				
+					<div class="form-group">
+						<label>AGRUPAR RESULTADOS POR:</label><br>
+						<input type="radio" id="genero" name="agrupacion_resultados" value="genero" checked>
+					  	<label for="genero">GENERO</label><br>
+			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad">
+				  		<label for="edad">EDAD</label><br>
+					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero">
+					  	<label for="edad-genero">EDAD y GENERO</label>
+					</div>
+					
+					<div class="form-group">
+						<label>TIPO GRAFICO:</label><br>
+						<input type="radio" id="num_jugadores" name="tipo_grafico" value="num_jugadores" checked>
+					  	<label for="num_jugadores">NUMERO JUGADORES</label><br>
+			  			<input type="radio" id="num_partidas" name="tipo_grafico" value="num_partidas">
+				  		<label for="num_partidas">NUMERO PARTIDAS</label><br>
+					  	<input type="radio" id="media_duracion" name="tipo_grafico" value="media_duracion">
+					  	<label for="media_duracion">MEDIA DURACION PARTIDAS</label><br>
+					  	<input type="radio" id="des_media_duracion" name="tipo_grafico" value="des_media_duracion">
+					  	<label for="des_media_duracion">DESVIACION MEDIA DURACION PARTIDAS</label><br>
+					  	<input type="radio" id="mediana_duracion" name="tipo_grafico" value="mediana_duracion">
+					  	<label for="mediana_duracion">MEDIANA DURACION PARTIDAS</label>
+					</div>
+					<button type="submit" value="Buscar" class="btn btn-primary float-right" >
+							GENERAR GRAFICO
+					</button>
+			</div>
+			<div class="col-md-1">
+			</div>
 		</div>
-		<div class="col-md-4">
-			<form action='results' method="post">
-				<div class="form-group">
-					<label for="rangoIni">
-							RANGO DESDE (meses)
-					</label>
-					<input type="number" min="0" required class="form-control" id="rangoIni" name="rangoDesde">
-				</div>
-				
-				<div class="form-group">
-					<label for="rangoFin">
-							RANGO HASTA (meses)
-					</label>
-					<input type="number" min="0" required class="form-control" id="rangoFin" name="rangoHasta">
-				</div>
-				<div class="form-group">
-					<label>GENERO</label>
-					<select class="form-control" id="genero" name="genero">
-							<option selected="selected" value="2">Ambos</option>
-							<option value="0">Masculino</option>
-							<option value="1">Femenino</option>
-					</select>
-				</div>
-				
-				<div class="form-group">
-					<label>INCLUIR SOLO CENTROS</label>
-					<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
-				</div>
-				
-				<div class="form-group">
-					<label>AGRUPAR RESULTADOS POR</label>
-					<select class="form-control" id="agrupacion_resultados" name="agrupacion_resultados">
-							<option selected="selected" value="genero">GENERO</option>
-							<option value="edad">EDAD</option>
-							<option value="edad-genero">EDAD y GENERO</option>
-					</select>
-				</div>
-				
-				<div class="form-group">
-					<label>TIPO GRAFICO</label>
-					<select class="form-control" id="tipo_grafico" name="tipo_grafico">
-							<option selected="selected" value="num_jugadores">NUMERO JUGADORES</option>
-							<option value="num_partidas">NUMERO PARTIDAS</option>
-							<option value="media_duracion">MEDIA DURACION PARTIDAS</option>
-							<option value="des_media_duracion">DESVIACION MEDIA DURACION PARTIDAS</option>
-							<option value="mediana_duracion">MEDIANA DURACION PARTIDAS</option>
-					</select>
-				</div>
-				<button type="submit" value="Buscar" class="btn btn-primary" >
-						GENERAR GRAFICO
-				</button>
-	  		</form>
-		</div>
-		<div class="col-md-4">
-		</div>
+		</form>
+	</div>
 	</div>
 </div>
 

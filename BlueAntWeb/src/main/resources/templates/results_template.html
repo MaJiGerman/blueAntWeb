@@ -85,15 +85,30 @@
 	        var btnSave = document.getElementById('save-pdf');
 			google.visualization.events.addListener(chart, 'ready', function () {
 			    btnSave.disabled = false;
-			  });
+		  	});
 			  
-			  btnSave.addEventListener('click', function () {
-			    var doc_download = new jsPDF("l", "mm", "a4");
+		  	btnSave.addEventListener('click', function () {
+	    		var doc_download = new jsPDF("l", "mm", "a4");
 			    var width = doc_download.internal.pageSize.width;
 				var height = doc_download.internal.pageSize.height;
 			    doc_download.addImage(chart.getImageURI(), 0, 0, width, 3*height/4, null, null, -90);
 			    doc_download.save('chart.pdf');
-			  }, false);
+		  	}, false);
+			  
+			var btnImg = document.getElementById('save-img');
+			google.visualization.events.addListener(chart, 'ready', function () {
+			    btnImg.disabled = false;
+		  	});
+		  	
+		  	btnImg.addEventListener('click', function () {
+      			var a = document.createElement('a');
+      			a.href=chart.getImageURI();
+				a.download = "chart.png";
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				
+		  	}, false);
 	
 	        chart.draw(view, options);
 	        			
@@ -106,6 +121,7 @@
 	<span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
 	<div style="margin-top:2%"></div>
 	<button class="btn btn-primary" id="save-pdf" type="button" value="Save as PDF" disabled>EXPORTAR A PDF</button>
+	<button class="btn btn-primary" id="save-img" type="button" value="Save as Image" disabled>EXPORTAR A IMAGEN</button>
 	<div id="chart_position" style="width: 90%; height: 75vh;"></div>
 	<form action='stats' method="post">
 		<button type="submit" value="Stats" class="btn btn-primary" >

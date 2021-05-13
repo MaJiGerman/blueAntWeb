@@ -98,6 +98,8 @@ public class ResultsController {
 		System.out.println("Agrupar resultados por: " + agrupacion_resultados);
 		System.out.println("Tipo grafico: " + tipo_grafico);
 		
+		int rangoDesdeMeses = Integer.parseInt(rangoDesde)*12;
+		int rangoHastaMeses = Integer.parseInt(rangoHasta)*12;
 		
 		List<Usuario> usuarios = new ArrayList<>();
 		String final_titulo_grafica = "";
@@ -108,15 +110,15 @@ public class ResultsController {
 		
 		if(genero.equals("0") || genero.equals("1")){ 
 			if(solo_centros != null) {
-				usuarios = userRepo.findByAgeAndGenderAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
+				usuarios = userRepo.findByAgeAndGenderAndCentre(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero));
 			}else {
-				usuarios = userRepo.findByAgeAndGender(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta),Integer.parseInt(genero));
+				usuarios = userRepo.findByAgeAndGender(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero));
 			}
 		}else {
 			if(solo_centros != null) {
-				usuarios = userRepo.findByAgeAndCentre(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
+				usuarios = userRepo.findByAgeAndCentre(rangoDesdeMeses, rangoHastaMeses);
 			}else {
-				usuarios = userRepo.findByAge(Integer.parseInt(rangoDesde), Integer.parseInt(rangoHasta));
+				usuarios = userRepo.findByAge(rangoDesdeMeses, rangoHastaMeses);
 			}
 		}
 		if (!usuarios.isEmpty() && usuarios.size() > 0) {
@@ -142,7 +144,7 @@ public class ResultsController {
 		}else if(tipo_grafico.equals("mediana_duracion")) {
 			final_titulo_grafica += "MEDIANA DURACION DE LAS PARTIDAS";
 		}
-		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " MESES";
+		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " AÑOS";
 		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase();
 		
 		if(agrupacion_resultados.equals("edad")) {
