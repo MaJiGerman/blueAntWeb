@@ -103,7 +103,7 @@
 		  	btnImg.addEventListener('click', function () {
       			var a = document.createElement('a');
       			a.href=chart.getImageURI();
-				a.download = "chart.png";
+				a.download = "chart.jpg";
 				document.body.appendChild(a);
 				a.click();
 				document.body.removeChild(a);
@@ -121,7 +121,7 @@
 	<span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
 	<div style="margin-top:2%"></div>
 	<button class="btn btn-primary" id="save-pdf" type="button" value="Save as PDF" disabled>EXPORTAR A PDF</button>
-	<button class="btn btn-primary" id="save-img" type="button" value="Save as Image" disabled>EXPORTAR A IMAGEN</button>
+	<button class="btn btn-primary" id="save-img" type="button" value="Save as Image" disabled>EXPORTAR A JPG</button>
 	<div id="chart_position" style="width: 90%; height: 75vh;"></div>
 	<form action='stats' method="post">
 		<button type="submit" value="Stats" class="btn btn-primary" >
