@@ -14,7 +14,7 @@
   </head>
   <body style="background-image: url('images/web-bg.jpg')">
     <div class="container-fluid">
-	<div class="row" style="margin-top:4%">
+	<div class="row" style="margin-top:7%">
 	<div class="col-md-12">
 		<form action='results' method="post">
 		<div class="row">
@@ -25,14 +25,14 @@
 						<label for="rangoIni">
 								RANGO DESDE *
 						</label>
-						<input type="number" min="0" required class="form-control" id="rangoIni" name="rangoDesde">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoIni" name="rangoDesde">
 					</div>
 					
 					<div class="form-group">
 						<label for="rangoFin">
 								RANGO HASTA *
 						</label>
-						<input type="number" min="0" required class="form-control" id="rangoFin" name="rangoHasta">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoFin" name="rangoHasta">
 					</div>
 					
 					<div class="form-group">
@@ -54,12 +54,12 @@
 				
 					<div class="form-group">
 						<label>AGRUPAR RESULTADOS POR:</label><br>
-						<input type="radio" id="genero" name="agrupacion_resultados" value="genero" checked>
-					  	<label for="genero">GENERO</label><br>
+					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero" checked>
+					  	<label for="edad-genero">EDAD y GENERO</label><br>
 			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad">
 				  		<label for="edad">EDAD</label><br>
-					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero">
-					  	<label for="edad-genero">EDAD y GENERO</label>
+						<input type="radio" id="genero" name="agrupacion_resultados" value="genero">
+					  	<label for="genero">GENERO</label>
 					</div>
 					
 					<div class="form-group">
