@@ -87,7 +87,7 @@ public class ResultsController {
 	public String results(@RequestParam(required = false, defaultValue = "-1") String genero, 
 			@RequestParam(required = false) String rangoDesde, @RequestParam(required = false) String rangoHasta, 
 			@RequestParam(required = false) String solo_centros, @RequestParam(required = false) String agrupacion_resultados, 
-			@RequestParam(required = false) String tipo_grafico, Model model) {
+			@RequestParam(required = false) String tipo_grafico, @RequestParam(required = false) String nivel_exp, Model model) {
 
 		System.out.println("--------------------------");
 		System.out.println("DATOS DE CONSULTA");
@@ -95,8 +95,16 @@ public class ResultsController {
 		System.out.println("rangoHasta: " + rangoHasta);
 		System.out.println("genero: " + genero);
 		System.out.println("Solo Centros: " + solo_centros);
+		System.out.println("Nivel Exp: " + nivel_exp);
 		System.out.println("Agrupar resultados por: " + agrupacion_resultados);
 		System.out.println("Tipo grafico: " + tipo_grafico);
+		
+		String niv_exp_consulta = "";
+		if(nivel_exp.equals("todos")) {
+			niv_exp_consulta = "%";
+		}else {
+			niv_exp_consulta = nivel_exp;
+		}
 		
 		int rangoDesdeMeses = Integer.parseInt(rangoDesde)*12;
 		int rangoHastaMeses = Integer.parseInt(rangoHasta)*12;
@@ -110,28 +118,29 @@ public class ResultsController {
 		
 		if(genero.equals("0") || genero.equals("1")){ 
 			if(solo_centros != null) {
-				usuarios = userRepo.findByAgeAndGenderAndCentre(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero));
+				usuarios = userRepo.findByAgeAndGenderAndCentre(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero), niv_exp_consulta);
 			}else {
-				usuarios = userRepo.findByAgeAndGender(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero));
+				usuarios = userRepo.findByAgeAndGender(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero), niv_exp_consulta);
 			}
 		}else {
 			if(solo_centros != null) {
-				usuarios = userRepo.findByAgeAndCentre(rangoDesdeMeses, rangoHastaMeses);
+				usuarios = userRepo.findByAgeAndCentre(rangoDesdeMeses, rangoHastaMeses, niv_exp_consulta);
 			}else {
-				usuarios = userRepo.findByAge(rangoDesdeMeses, rangoHastaMeses);
+				usuarios = userRepo.findByAge(rangoDesdeMeses, rangoHastaMeses, niv_exp_consulta);
 			}
 		}
 		if (!usuarios.isEmpty() && usuarios.size() > 0) {
 			System.out.println("se han encontrado "+usuarios.size()+" resultados");
 		}
 		else{
-			model.addAttribute("filtro_edad_ini", rangoDesde);
-			model.addAttribute("filtro_edad_fin", rangoHasta);
+			model.addAttribute("filtro_edad_ini", rangoDesdeMeses);
+			model.addAttribute("filtro_edad_fin", rangoHastaMeses);
 			model.addAttribute("genero", genero);
 			if(solo_centros != null)
 				model.addAttribute("centros", "SI");
 			else
 				model.addAttribute("centros", "NO");
+			model.addAttribute("nivel_exp", nivel_exp);
 			return "filter_empty_template";
 		}
 

@@ -49,6 +49,15 @@
 						<label>INCLUIR SOLO CENTROS</label>
 						<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
 					</div>
+					<div class="form-group">
+						<label>NIVEL EXPERIENCIA</label>
+						<select class="form-control" id="nivel_exp" name="nivel_exp">
+							<option value="todos" default>TODOS</option>
+							{{#lista_exp}}
+							<option value={{.}}>{{.}}</option>
+							{{/lista_exp}}
+						</select>
+					</div>
 			</div>
 			<div class="col-md-5">
 				

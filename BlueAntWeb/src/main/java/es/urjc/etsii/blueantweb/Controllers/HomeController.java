@@ -9,7 +9,7 @@ public class HomeController {
 	
 	@RequestMapping(value = { "", "/", "/home" })
 	public String home(Model model) {
-		model.addAttribute("name", "GERMAN");
+		
 		return "home_template";
 	}
 
