@@ -29,10 +29,13 @@ public class ResultsController {
     
     class myPartidaObject{
 		public int _idPartida;
-		public List<Integer> lista_estadistica_tiempo2;
+		private List<Integer> lista_estadistica_tiempo2;
+		private List<Integer> lista_estadistica_ganadas2;
+		
 		 protected myPartidaObject(int id) {
 			 this._idPartida = id;
 			 this.lista_estadistica_tiempo2 = new ArrayList<>();
+			 this.lista_estadistica_ganadas2 = new ArrayList<>();
 		 }
 		 protected void addEstadistica(Integer e_t2) {
 			 this.lista_estadistica_tiempo2.add(e_t2);
@@ -40,10 +43,21 @@ public class ResultsController {
 		 protected List<Integer> getEstadistica(){
 			 return this.lista_estadistica_tiempo2;
 		 }
+		 protected void addEstadisticaGanada(Integer e_id2) {
+			 this.lista_estadistica_ganadas2.add(e_id2);
+		 }
+		 protected List<Integer> getEstadisticaGanada(){
+			 return this.lista_estadistica_ganadas2;
+		 }
 		 public String toString() {
 			 String return_string = "idPartida: " + _idPartida +"\n		[";
 			 for (Integer tiempo : lista_estadistica_tiempo2) {
 				 return_string += ""+ tiempo +", ";
+			 }
+			 return_string = return_string.substring(0, return_string.length() - 2);
+			 return_string += "]\n		[";
+			 for (Integer ganador : lista_estadistica_ganadas2) {
+				 return_string += ""+ ganador +", ";
 			 }
 			 return_string = return_string.substring(0, return_string.length() - 2);
 			 return_string += "]\n";
@@ -114,7 +128,7 @@ public class ResultsController {
 		List<List<Integer>> final_datos_grafica = new ArrayList<>();
 		List<String> final_nombres_grafica = new ArrayList<>();
 		
-		System.out.println("*******************");
+		System.out.println("********************************************************************");
 		
 		if(genero.equals("0") || genero.equals("1")){ 
 			if(solo_centros != null) {
@@ -152,6 +166,8 @@ public class ResultsController {
 			final_titulo_grafica += "MEDIA DURACION DE LAS PARTIDAS";
 		}else if(tipo_grafico.equals("mediana_duracion")) {
 			final_titulo_grafica += "MEDIANA DURACION DE LAS PARTIDAS";
+		}else if(tipo_grafico.equals("porcentaje_ganadas")) {
+			final_titulo_grafica += "PORCENTAJE DE PARTIDAS GANADAS";
 		}
 		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " AÑOS";
 		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase();
@@ -326,7 +342,11 @@ public class ResultsController {
 		    	   */
 		    	  myPartidaObject p = hashDatosPartidas.get(par_e[0]);
 		    	  Integer e_tiempo2 = (Integer) par_e[1];
+		    	  Integer e_ganada = (Integer) par_e[2];
 		    	  p.addEstadistica(e_tiempo2);
+		    	  if(e_ganada==2) {
+		    		  p.addEstadisticaGanada(e_ganada);
+	    		  }
 		    	  hashDatosPartidas.put((Integer) par_e[0], p);
 		      }else {
 		    	  /*
@@ -335,7 +355,11 @@ public class ResultsController {
 		    	   */
 		    	  myPartidaObject p = new myPartidaObject((Integer) par_e[0]);
 		    	  Integer e_tiempo2 = (Integer) par_e[1];
+		    	  Integer e_ganada = (Integer) par_e[2];
 		    	  p.addEstadistica(e_tiempo2);
+		    	  if(e_ganada==2) {
+		    		  p.addEstadisticaGanada(e_ganada);
+	    		  }
 		    	  hashDatosPartidas.put((Integer) par_e[0], p);
 		      }
 		  }
@@ -377,13 +401,14 @@ public class ResultsController {
 		}
 		*/
 		
-		System.out.println("*******************");
+		System.out.println("********************************************************************");
 
 		List<List<Double>> final_datos_grafica_2 = new ArrayList<>();
 		
 		for (Integer key: hashResultadosDivididos.keySet()) {
 			List<Double> aux_lista = new ArrayList<>();
 			List<Integer> aux_lista_todas_partidas = new ArrayList<>();
+			List<Integer> aux_lista_partidas_ganadas = new ArrayList<>();
 			List<List<Integer>> aux_lista_data = new ArrayList<>();
 			double num_partidas = 0;
 			
@@ -396,19 +421,24 @@ public class ResultsController {
 			for(int i=0; i<aux_lista_data.size(); i++) {
 				num_partidas = 0;
 				aux_lista_todas_partidas = new ArrayList<>();
+				aux_lista_partidas_ganadas = new ArrayList<>();
 				List<Integer> aux_lista_usr_id = aux_lista_data.get(i);
+				
 				// por cada uno de los usuarios
 				for(int j=0; j<aux_lista_usr_id.size(); j++) {
 					int id_usr = aux_lista_usr_id.get(j);
 					if(hashDatosUsr.containsKey(id_usr)){
 						myUsuarioObject u = hashDatosUsr.get(id_usr);
 						List<myPartidaObject> lista_myP = u.getmyPartidaObject();
+						
 						// por cada una de las partidas
 						for(int k=0; k<lista_myP.size(); k++) {
 							myPartidaObject p = lista_myP.get(k);
 							if((p != null)) {
 								List<Integer> e = p.getEstadistica();
+								List<Integer> e_ganadas = p.getEstadisticaGanada();
 								aux_lista_todas_partidas.addAll(e);
+								aux_lista_partidas_ganadas.addAll(e_ganadas);
 								num_partidas += e.size();
 							}
 						}
@@ -458,6 +488,15 @@ public class ResultsController {
 					//System.out.println("MEDIANA: "+mediana);
 					aux_lista.add(mediana);
 				}
+				// Calcular el porcentaje de partidas ganadas
+				if(tipo_grafico.equals("porcentaje_ganadas")){
+					int total = aux_lista_todas_partidas.size();
+					int ganadas = aux_lista_partidas_ganadas.size();
+					double porcentaje_ganadas = ((double) ganadas/(double) total)*100;
+					System.out.println("TOTAL: "+total+" GANADAS: "+ganadas+" PORCENTAJE: "+porcentaje_ganadas);
+					aux_lista.add(porcentaje_ganadas);
+				}
+				
 			}
 			
 			final_datos_grafica_2.add(aux_lista);

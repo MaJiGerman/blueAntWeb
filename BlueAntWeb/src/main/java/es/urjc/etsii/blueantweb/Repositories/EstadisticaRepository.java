@@ -13,6 +13,6 @@ public interface EstadisticaRepository extends JpaRepository<Estadistica, Long>{
 	@Query(value = "SELECT Tiempo2 FROM Estadistica WHERE IdPartida = ?1 AND PasosDados > 0", nativeQuery = true)
 	List<String> findByIdPartida(int idPartida);
 
-	@Query(value = "SELECT IdPartida,Tiempo2 FROM Estadistica WHERE IdPartida IN (?1)", nativeQuery = true)
+	@Query(value = "SELECT IdPartida,Tiempo2,Ganador,PasosDados,PasosOptimo FROM Estadistica WHERE IdPartida IN (?1) AND PasosDados > 0", nativeQuery = true)
 	List<Object[]> findByIdPartidaList(List<Integer> idPartidaList);
 }
