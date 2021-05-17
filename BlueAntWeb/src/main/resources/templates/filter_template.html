@@ -14,44 +14,44 @@
   </head>
   <body style="background-image: url('images/web-bg.jpg')">
     <div class="container-fluid">
-	<div class="row" style="margin-top:7%">
+	<div class="row" style="margin-top:5%">
 	<div class="col-md-12">
 		<form action='results' method="post">
 		<div class="row">
 			<div class="col-md-1">
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-4">
 					<div class="form-group">
 						<label for="rangoIni">
-								RANGO DESDE *
+								<strong>RANGO DESDE: *</strong>
 						</label>
-						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoIni" name="rangoDesde">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoIni" name="rangoDesde" style="margin-left: 20px;">
 					</div>
 					
 					<div class="form-group">
 						<label for="rangoFin">
-								RANGO HASTA *
+								<strong>RANGO HASTA: *</strong>
 						</label>
-						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoFin" name="rangoHasta">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoFin" name="rangoHasta" style="margin-left: 20px;">
 					</div>
 					
 					<div class="form-group">
-						<label>GENERO:</label><br>
-						<input type="radio" id="ambos" name="genero" value="2" checked>
+						<label><strong>GENERO:</strong></label><br>
+						<input type="radio" id="ambos" name="genero" value="2" style="margin-left: 20px;" checked >
 					  	<label for="ambos">AMBOS</label><br>
-			  			<input type="radio" id="masc" name="genero" value="0">
+			  			<input type="radio" id="masc" name="genero" value="0" style="margin-left: 20px;">
 				  		<label for="masc">MASCULINO</label><br>
-					  	<input type="radio" id="fem" name="genero" value="1">
+					  	<input type="radio" id="fem" name="genero" value="1" style="margin-left: 20px;">
 					  	<label for="fem">FEMENINO</label>
 					</div>
 					
 					<div class="form-group">
-						<label>INCLUIR SOLO CENTROS</label>
-						<input type="checkbox" id="solo_centros" name="solo_centros" value="centros">
+						<label><strong>INCLUIR SOLO CENTROS</strong></label>
+						<input type="checkbox" id="solo_centros" name="solo_centros" value="centros" style="margin-left: 10px;">
 					</div>
 					<div class="form-group">
-						<label>NIVEL EXPERIENCIA</label>
-						<select class="form-control" id="nivel_exp" name="nivel_exp">
+						<label><strong>NIVEL EXPERIENCIA:</strong></label>
+						<select class="form-control" id="nivel_exp" name="nivel_exp" style="margin-left: 20px;">
 							<option value="todos" default>TODOS</option>
 							{{#lista_exp}}
 							<option value={{.}}>{{.}}</option>
@@ -59,34 +59,40 @@
 						</select>
 					</div>
 			</div>
+			<div class="col-md-1">
+			</div>
 			<div class="col-md-5">
 				
 					<div class="form-group">
-						<label>AGRUPAR RESULTADOS POR:</label><br>
-					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero" checked>
+						<label><strong>AGRUPAR RESULTADOS POR:</strong></label><br>
+					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero" style="margin-left: 20px;" checked>
 					  	<label for="edad-genero">EDAD y GENERO</label><br>
-			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad">
+			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad" style="margin-left: 20px;">
 				  		<label for="edad">EDAD</label><br>
-						<input type="radio" id="genero" name="agrupacion_resultados" value="genero">
+						<input type="radio" id="genero" name="agrupacion_resultados" value="genero" style="margin-left: 20px;">
 					  	<label for="genero">GENERO</label>
 					</div>
 					
 					<div class="form-group">
-						<label>TIPO GRAFICO:</label><br>
-						<input type="radio" id="num_jugadores" name="tipo_grafico" value="num_jugadores" checked>
+						<label><strong>TIPO GRAFICO:</strong></label><br>
+						<input type="radio" id="num_jugadores" name="tipo_grafico" value="num_jugadores" style="margin-left: 20px;" checked>
 					  	<label for="num_jugadores">NUMERO JUGADORES</label><br>
-			  			<input type="radio" id="num_partidas" name="tipo_grafico" value="num_partidas">
+			  			<input type="radio" id="num_partidas" name="tipo_grafico" value="num_partidas" style="margin-left: 20px;">
 				  		<label for="num_partidas">NUMERO PARTIDAS</label><br>
-					  	<input type="radio" id="media_duracion" name="tipo_grafico" value="media_duracion">
+					  	<input type="radio" id="media_duracion" name="tipo_grafico" value="media_duracion" style="margin-left: 20px;">
 					  	<label for="media_duracion">MEDIA DURACION PARTIDAS</label><br>
-					  	<input type="radio" id="des_media_duracion" name="tipo_grafico" value="des_media_duracion">
+					  	<input type="radio" id="des_media_duracion" name="tipo_grafico" value="des_media_duracion" style="margin-left: 20px;">
 					  	<label for="des_media_duracion">DESVIACION MEDIA DURACION PARTIDAS</label><br>
-					  	<input type="radio" id="mediana_duracion" name="tipo_grafico" value="mediana_duracion">
+					  	<input type="radio" id="mediana_duracion" name="tipo_grafico" value="mediana_duracion" style="margin-left: 20px;">
 					  	<label for="mediana_duracion">MEDIANA DURACION PARTIDAS</label><br>
-					  	<input type="radio" id="porcentaje_ganadas" name="tipo_grafico" value="porcentaje_ganadas">
+					  	<input type="radio" id="porcentaje_ganadas" name="tipo_grafico" value="porcentaje_ganadas" style="margin-left: 20px;">
 					  	<label for="porcentaje_ganadas">PORCENTAJE PARTIDAS GANADAS</label>
 					</div>
-					<button type="submit" value="Buscar" class="btn btn-primary float-right" >
+					<br>
+					<br>
+					<br>
+					<br>
+					<button type="submit" value="Buscar" class="btn btn-primary float-right" style="margin-right: 20px;" >
 							GENERAR GRAFICO
 					</button>
 			</div>
