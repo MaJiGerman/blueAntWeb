@@ -31,11 +31,13 @@ public class ResultsController {
 		public int _idPartida;
 		private List<Integer> lista_estadistica_tiempo2;
 		private List<Integer> lista_estadistica_ganadas2;
+		private List<Integer> lista_dif_dados_optimos;
 		
 		 protected myPartidaObject(int id) {
 			 this._idPartida = id;
 			 this.lista_estadistica_tiempo2 = new ArrayList<>();
 			 this.lista_estadistica_ganadas2 = new ArrayList<>();
+			 this.lista_dif_dados_optimos = new ArrayList<>();
 		 }
 		 protected void addEstadistica(Integer e_t2) {
 			 this.lista_estadistica_tiempo2.add(e_t2);
@@ -48,6 +50,12 @@ public class ResultsController {
 		 }
 		 protected List<Integer> getEstadisticaGanada(){
 			 return this.lista_estadistica_ganadas2;
+		 }
+		 protected void addDiferenciaPasos(Integer diferencia) {
+			 this.lista_dif_dados_optimos.add(diferencia);
+		 }
+		 protected List<Integer> getDiferenciaDadosOptimos(){
+			 return this.lista_dif_dados_optimos;
 		 }
 		 public String toString() {
 			 String return_string = "idPartida: " + _idPartida +"\n		[";
@@ -157,17 +165,35 @@ public class ResultsController {
 			model.addAttribute("nivel_exp", nivel_exp);
 			return "filter_empty_template";
 		}
-
-		if(tipo_grafico.equals("num_jugadores")) {
-			final_titulo_grafica += "NUMERO DE JUGADORES";
-		}else if(tipo_grafico.equals("num_partidas")) {
-			final_titulo_grafica += "NUMERO DE PARTIDAS JUGADAS";
-		}else if(tipo_grafico.equals("media_duracion")) {
-			final_titulo_grafica += "MEDIA DURACION DE LAS PARTIDAS";
-		}else if(tipo_grafico.equals("mediana_duracion")) {
-			final_titulo_grafica += "MEDIANA DURACION DE LAS PARTIDAS";
-		}else if(tipo_grafico.equals("porcentaje_ganadas")) {
-			final_titulo_grafica += "PORCENTAJE DE PARTIDAS GANADAS";
+		switch(tipo_grafico) {
+			case "num_jugadores":{
+				final_titulo_grafica += "NUMERO DE JUGADORES"; 
+				break;
+			}
+			case "num_partidas":{ 
+				final_titulo_grafica += "NUMERO DE PARTIDAS JUGADAS";
+				break;
+			}
+			case "media_duracion":{ 
+				final_titulo_grafica += "MEDIA DE DURACION DE LAS PARTIDAS";
+				break;
+			}
+			case "des_media_duracion":{ 
+				final_titulo_grafica += "DESVIACION MEDIA DE DURACION DE LAS PARTIDAS";
+				break;
+			}
+			case "mediana_duracion":{ 
+				final_titulo_grafica += "MEDIANA DE DURACION DE LAS PARTIDAS";
+				break;
+			}
+			case "porcentaje_ganadas":{ 
+				final_titulo_grafica += "PORCENTAJE DE PARTIDAS GANADAS";
+				break;
+			}
+			case "media_dif_dados_optimos":{ 
+				final_titulo_grafica += "DIFERENCIA MEDIA ENTRE PASOS DADOS Y PASOS OPTIMOS";
+				break;
+			}
 		}
 		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " AÑOS";
 		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase();
@@ -246,13 +272,13 @@ public class ResultsController {
 			hashUsuarios.put(aux_u.getId(), aux_u);
 		}
 		
-		
+		/*
 		System.out.println("DIVISION USUARIOS: " + hashResultadosDivididos.keySet());
 		
 		for (Integer key: hashResultadosDivididos.keySet()) {
 		    System.out.println(key + "=" + hashResultadosDivididos.get(key));
 		}
-				
+		*/		
 		/*
 		 * SI SOLO SE QUIERE EL NUMERO DE JUGADORES, EVITAMOS HACER CONSULTAS INNECESARIAS
 		 */
@@ -343,10 +369,18 @@ public class ResultsController {
 		    	  myPartidaObject p = hashDatosPartidas.get(par_e[0]);
 		    	  Integer e_tiempo2 = (Integer) par_e[1];
 		    	  Integer e_ganada = (Integer) par_e[2];
+		    	  Integer e_pasos_dados = (Integer) par_e[3];
+		    	  Integer e_pasos_optimos = (Integer) par_e[4];
 		    	  p.addEstadistica(e_tiempo2);
 		    	  if(e_ganada==2) {
 		    		  p.addEstadisticaGanada(e_ganada);
 	    		  }
+		    	  // Si los pasos optimos > 0 (se ha calculado el optimo)
+		    	  if(e_pasos_optimos>0) {
+		    		  int diferencia = Math.abs(e_pasos_optimos-e_pasos_dados);
+		    		  //System.out.println("Se ha calculado el optimo: " + e_pasos_optimos + ". Se han dado: " + e_pasos_dados + ". Diferencia: " + diferencia);
+		    		  p.addDiferenciaPasos(diferencia);
+		    	  }
 		    	  hashDatosPartidas.put((Integer) par_e[0], p);
 		      }else {
 		    	  /*
@@ -356,10 +390,18 @@ public class ResultsController {
 		    	  myPartidaObject p = new myPartidaObject((Integer) par_e[0]);
 		    	  Integer e_tiempo2 = (Integer) par_e[1];
 		    	  Integer e_ganada = (Integer) par_e[2];
+		    	  Integer e_pasos_dados = (Integer) par_e[3];
+		    	  Integer e_pasos_optimos = (Integer) par_e[4];
 		    	  p.addEstadistica(e_tiempo2);
 		    	  if(e_ganada==2) {
 		    		  p.addEstadisticaGanada(e_ganada);
 	    		  }
+		    	  // Si los pasos optimos > 0 (se ha calculado el optimo)
+		    	  if(e_pasos_optimos>0) {
+		    		  int diferencia = Math.abs(e_pasos_optimos-e_pasos_dados);
+		    		  //System.out.println("Se ha calculado el optimo: " + e_pasos_optimos + ". Se han dado: " + e_pasos_dados + ". Diferencia: " + diferencia);
+		    		  p.addDiferenciaPasos(diferencia);
+		    	  }
 		    	  hashDatosPartidas.put((Integer) par_e[0], p);
 		      }
 		  }
@@ -409,6 +451,7 @@ public class ResultsController {
 			List<Double> aux_lista = new ArrayList<>();
 			List<Integer> aux_lista_todas_partidas = new ArrayList<>();
 			List<Integer> aux_lista_partidas_ganadas = new ArrayList<>();
+			List<Integer> aux_lista_diferencia_pasos = new ArrayList<>();
 			List<List<Integer>> aux_lista_data = new ArrayList<>();
 			double num_partidas = 0;
 			
@@ -422,6 +465,7 @@ public class ResultsController {
 				num_partidas = 0;
 				aux_lista_todas_partidas = new ArrayList<>();
 				aux_lista_partidas_ganadas = new ArrayList<>();
+				aux_lista_diferencia_pasos = new ArrayList<>();
 				List<Integer> aux_lista_usr_id = aux_lista_data.get(i);
 				
 				// por cada uno de los usuarios
@@ -436,69 +480,83 @@ public class ResultsController {
 							myPartidaObject p = lista_myP.get(k);
 							if((p != null)) {
 								List<Integer> e = p.getEstadistica();
-								List<Integer> e_ganadas = p.getEstadisticaGanada();
 								aux_lista_todas_partidas.addAll(e);
+								
+								List<Integer> e_ganadas = p.getEstadisticaGanada();
 								aux_lista_partidas_ganadas.addAll(e_ganadas);
+								
+								List<Integer> e_dif = p.getDiferenciaDadosOptimos();
+								aux_lista_diferencia_pasos.addAll(e_dif);
 								num_partidas += e.size();
 							}
 						}
 					}
 				}
-				// Calcular el numero de partidas de esta listas de usuarios
-				if(tipo_grafico.equals("num_partidas")){
-					aux_lista.add(num_partidas);
-				}
-				// Calcular la media de esta listas de usuarios
-				if(tipo_grafico.equals("media_duracion")){
-					double suma = 0;
-					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
-						suma += aux_lista_todas_partidas.get(index);
-					}
-					double media = suma / aux_lista_todas_partidas.size();
-					//System.out.println("MEDIA: "+suma+" / "+aux_lista_todas_partidas.size()+" = "+media);
-					aux_lista.add(media);
-				}
-				// Calcular la desviacion media de esta listas de usuarios
-				if(tipo_grafico.equals("des_media_duracion")){
-					double suma = 0;
-					double desviacion_media = 0;
-					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
-						suma += aux_lista_todas_partidas.get(index);
-					}
-					double media = suma / aux_lista_todas_partidas.size();
-					
-					for(int index=0; index<aux_lista_todas_partidas.size();index++) {
-						desviacion_media += Math.pow(aux_lista_todas_partidas.get(index) - media, 2);
-					}
-					desviacion_media = Math.sqrt(desviacion_media / aux_lista_todas_partidas.size());
-					aux_lista.add(desviacion_media);
-				}
-				// Calcular la mediana de esta listas de usuarios
-				if(tipo_grafico.equals("mediana_duracion")){
-					aux_lista_todas_partidas.sort(null);
-					List<Integer> aux_l = aux_lista_todas_partidas;
-					//System.out.println(aux_l);
-					double mediana = 0;
-					if(aux_l.size() > 0) {
-						if (aux_l.size() % 2 == 0)
-							mediana = (aux_l.get(aux_l.size()/2) + aux_l.get((aux_l.size() - 1)/2)) / 2;
-						else
-							mediana = aux_l.get(aux_l.size()/2);
-					}
-					//System.out.println("MEDIANA: "+mediana);
-					aux_lista.add(mediana);
-				}
-				// Calcular el porcentaje de partidas ganadas
-				if(tipo_grafico.equals("porcentaje_ganadas")){
-					int total = aux_lista_todas_partidas.size();
-					int ganadas = aux_lista_partidas_ganadas.size();
-					double porcentaje_ganadas = ((double) ganadas/(double) total)*100;
-					System.out.println("TOTAL: "+total+" GANADAS: "+ganadas+" PORCENTAJE: "+porcentaje_ganadas);
-					aux_lista.add(porcentaje_ganadas);
-				}
 				
+				switch(tipo_grafico) {
+					case "num_partidas":{ // Calcular el numero de partidas de esta listas de usuarios
+						aux_lista.add(num_partidas);
+						break;
+					}
+					case "media_duracion":{ // Calcular la media de esta listas de usuarios
+						double suma = 0;
+						for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+							suma += aux_lista_todas_partidas.get(index);
+						}
+						double media = suma / aux_lista_todas_partidas.size();
+						//System.out.println("MEDIA: "+suma+" / "+aux_lista_todas_partidas.size()+" = "+media);
+						aux_lista.add(media);
+						break;
+					}
+					case "des_media_duracion":{ // Calcular la desviacion media de esta listas de usuarios
+						double suma = 0;
+						double desviacion_media = 0;
+						for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+							suma += aux_lista_todas_partidas.get(index);
+						}
+						double media = suma / aux_lista_todas_partidas.size();
+						
+						for(int index=0; index<aux_lista_todas_partidas.size();index++) {
+							desviacion_media += Math.pow(aux_lista_todas_partidas.get(index) - media, 2);
+						}
+						desviacion_media = Math.sqrt(desviacion_media / aux_lista_todas_partidas.size());
+						aux_lista.add(desviacion_media);
+						break;
+					}
+					case "mediana_duracion":{ // Calcular la mediana de esta listas de usuarios
+						aux_lista_todas_partidas.sort(null);
+						List<Integer> aux_l = aux_lista_todas_partidas;
+						//System.out.println(aux_l);
+						double mediana = 0;
+						if(aux_l.size() > 0) {
+							if (aux_l.size() % 2 == 0)
+								mediana = (aux_l.get(aux_l.size()/2) + aux_l.get((aux_l.size() - 1)/2)) / 2;
+							else
+								mediana = aux_l.get(aux_l.size()/2);
+						}
+						//System.out.println("MEDIANA: "+mediana);
+						aux_lista.add(mediana);
+						break;
+					}
+					case "porcentaje_ganadas":{ // Calcular el porcentaje de partidas ganadas
+						int total = aux_lista_todas_partidas.size();
+						int ganadas = aux_lista_partidas_ganadas.size();
+						double porcentaje_ganadas = ((double) ganadas/(double) total)*100;
+						//System.out.println("TOTAL: "+total+" GANADAS: "+ganadas+" PORCENTAJE: "+porcentaje_ganadas);
+						aux_lista.add(porcentaje_ganadas);
+						break;
+					}
+					case "media_dif_dados_optimos":{ // Calcular la diferencia media de pasos dados y pasos optimos
+						double suma = 0;
+						for(int index=0; index<aux_lista_diferencia_pasos.size();index++) {
+							suma += aux_lista_diferencia_pasos.get(index);
+						}
+						double media = suma / aux_lista_diferencia_pasos.size();
+						//System.out.println("MEDIA: "+suma+" / "+aux_lista_diferencia_pasos.size()+" = "+media);
+						aux_lista.add(media);
+					}
+				}
 			}
-			
 			final_datos_grafica_2.add(aux_lista);
 		}
 		
