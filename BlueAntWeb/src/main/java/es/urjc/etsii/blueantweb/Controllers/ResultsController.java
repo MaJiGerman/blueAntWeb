@@ -155,9 +155,14 @@ public class ResultsController {
 			System.out.println("se han encontrado "+usuarios.size()+" resultados");
 		}
 		else{
-			model.addAttribute("filtro_edad_ini", rangoDesdeMeses);
-			model.addAttribute("filtro_edad_fin", rangoHastaMeses);
-			model.addAttribute("genero", genero);
+			model.addAttribute("filtro_edad_ini", rangoDesde);
+			model.addAttribute("filtro_edad_fin", rangoHasta);
+			if(genero == "0")
+				model.addAttribute("genero", "MASCULINO");
+			else if(genero == "1")
+				model.addAttribute("genero", "FEMENINO");
+			else
+				model.addAttribute("genero", "AMBOS");
 			if(solo_centros != null)
 				model.addAttribute("centros", "SI");
 			else
@@ -175,15 +180,15 @@ public class ResultsController {
 				break;
 			}
 			case "media_duracion":{ 
-				final_titulo_grafica += "MEDIA DE DURACION DE LAS PARTIDAS";
+				final_titulo_grafica += "MEDIA DE DURACION (ms) DE LAS PARTIDAS";
 				break;
 			}
 			case "des_media_duracion":{ 
-				final_titulo_grafica += "DESVIACION MEDIA DE DURACION DE LAS PARTIDAS";
+				final_titulo_grafica += "DESVIACION MEDIA DE DURACION (ms) DE LAS PARTIDAS";
 				break;
 			}
 			case "mediana_duracion":{ 
-				final_titulo_grafica += "MEDIANA DE DURACION DE LAS PARTIDAS";
+				final_titulo_grafica += "MEDIANA DE DURACION (ms) DE LAS PARTIDAS";
 				break;
 			}
 			case "porcentaje_ganadas":{ 
