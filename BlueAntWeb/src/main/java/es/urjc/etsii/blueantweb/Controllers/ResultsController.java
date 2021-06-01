@@ -139,13 +139,13 @@ public class ResultsController {
 		System.out.println("********************************************************************");
 		
 		if(genero.equals("0") || genero.equals("1")){ 
-			if(solo_centros != null) {
+			if(solo_centros.equals("centros")) {
 				usuarios = userRepo.findByAgeAndGenderAndCentre(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero), niv_exp_consulta);
 			}else {
 				usuarios = userRepo.findByAgeAndGender(rangoDesdeMeses, rangoHastaMeses,Integer.parseInt(genero), niv_exp_consulta);
 			}
 		}else {
-			if(solo_centros != null) {
+			if(solo_centros.equals("centros")) {
 				usuarios = userRepo.findByAgeAndCentre(rangoDesdeMeses, rangoHastaMeses, niv_exp_consulta);
 			}else {
 				usuarios = userRepo.findByAge(rangoDesdeMeses, rangoHastaMeses, niv_exp_consulta);
@@ -163,7 +163,7 @@ public class ResultsController {
 				model.addAttribute("genero", "FEMENINO");
 			else
 				model.addAttribute("genero", "AMBOS");
-			if(solo_centros != null)
+			if(solo_centros.equals("centros"))
 				model.addAttribute("centros", "SI");
 			else
 				model.addAttribute("centros", "NO");

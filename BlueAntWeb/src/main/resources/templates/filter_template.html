@@ -24,36 +24,43 @@
 			<div class="col-md-5">
 				<div class="col-md-11">
 					<div class="form-group">
-						<label for="rangoIni">
+						<label><strong>1.- PARAMETROS DE FILTRADO:</strong></label><br>
+						<label for="rangoIni" style="margin-left: 25px;">
 								<strong>RANGO EDAD DESDE (AÑOS): *</strong>
 						</label>
-						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoIni" name="rangoDesde" style="margin-left: 20px;">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoIni" name="rangoDesde" style="margin-left: 45px;">
 					</div>
 					
 					<div class="form-group">
-						<label for="rangoFin">
+						<label for="rangoFin" style="margin-left: 25px;">
 								<strong>RANGO EDAD HASTA (AÑOS): *</strong>
 						</label>
-						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoFin" name="rangoHasta" style="margin-left: 20px;">
+						<input type="number" min="0" max="2147483647" required class="form-control" id="rangoFin" name="rangoHasta" style="margin-left: 45px;">
 					</div>
 					
 					<div class="form-group">
-						<label><strong>GENERO:</strong></label><br>
-						<input type="radio" id="ambos" name="genero" value="2" style="margin-left: 20px;" checked >
+						<label style="margin-left: 25px;"><strong>GENERO:</strong></label><br>
+						<input type="radio" id="ambos" name="genero" value="2" style="margin-left: 45px;" checked >
 					  	<label for="ambos">AMBOS</label><br>
-			  			<input type="radio" id="masc" name="genero" value="0" style="margin-left: 20px;">
+			  			<input type="radio" id="masc" name="genero" value="0" style="margin-left: 45px;">
 				  		<label for="masc">MASCULINO</label><br>
-					  	<input type="radio" id="fem" name="genero" value="1" style="margin-left: 20px;">
+					  	<input type="radio" id="fem" name="genero" value="1" style="margin-left: 45px;">
 					  	<label for="fem">FEMENINO</label>
 					</div>
 					
+					<br>
+					<br>
+					
 					<div class="form-group">
-						<label><strong>INCLUIR SOLO CENTROS</strong></label>
-						<input type="checkbox" id="solo_centros" name="solo_centros" value="centros" style="margin-left: 10px;">
+						<label style="margin-left: 25px;"><strong>INCLUIR:</strong></label><br>
+						<input type="radio" id="todas" name="solo_centros" value="todos" style="margin-left: 45px;" checked>
+					  	<label for="todas">TODAS LAS PARTIDAS</label><br>
+						<input type="radio" id="centros" name="solo_centros" value="centros" style="margin-left: 45px;">
+					  	<label for="centros">SOLO EXPERIENCIA EN CENTROS</label>
 					</div>
 					<div class="form-group">
-						<label><strong>NIVEL EXPERIENCIA:</strong></label>
-						<select class="form-control" id="nivel_exp" name="nivel_exp" style="margin-left: 20px;">
+						<label style="margin-left: 25px;"><strong>NIVEL EXPERIENCIA:</strong></label>
+						<select class="form-control" id="nivel_exp" name="nivel_exp" style="margin-left: 45px;">
 							<option value="todos" default>TODOS</option>
 							{{#lista_exp}}
 							<option value={{.}}>{{.}}</option>
@@ -67,7 +74,7 @@
 			<div class="col-md-5">
 				
 					<div class="form-group">
-						<label><strong>AGRUPAR RESULTADOS POR:</strong></label><br>
+						<label><strong>2.- TIPO DE AGRUPACION:</strong></label><br>
 					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero" style="margin-left: 20px;" checked>
 					  	<label for="edad-genero">EDAD y GENERO</label><br>
 			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad" style="margin-left: 20px;">
@@ -77,7 +84,7 @@
 					</div>
 					
 					<div class="form-group">
-						<label><strong>TIPO GRAFICO:</strong></label><br>
+						<label><strong>3.- TIPO GRAFICO:</strong></label><br>
 						<input type="radio" id="num_jugadores" name="tipo_grafico" value="num_jugadores" style="margin-left: 20px;" checked>
 					  	<label for="num_jugadores">NUMERO JUGADORES</label><br>
 			  			<input type="radio" id="num_partidas" name="tipo_grafico" value="num_partidas" style="margin-left: 20px;">
