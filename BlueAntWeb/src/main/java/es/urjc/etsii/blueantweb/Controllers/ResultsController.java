@@ -133,6 +133,8 @@ public class ResultsController {
 		
 		List<Usuario> usuarios = new ArrayList<>();
 		String final_titulo_grafica = "";
+		String final_nombre_ejeX_grafica = "EJE X";
+		String final_nombre_ejeY_grafica = "EJE Y";
 		List<List<Integer>> final_datos_grafica = new ArrayList<>();
 		List<String> final_nombres_grafica = new ArrayList<>();
 		
@@ -170,33 +172,45 @@ public class ResultsController {
 			model.addAttribute("nivel_exp", nivel_exp);
 			return "filter_empty_template";
 		}
+		if(agrupacion_resultados.equals("genero")) {
+			final_nombre_ejeX_grafica = "GENERO";
+		}else {
+			final_nombre_ejeX_grafica = "EDAD (años)";
+		}
 		switch(tipo_grafico) {
 			case "num_jugadores":{
-				final_titulo_grafica += "NUMERO DE JUGADORES"; 
+				final_titulo_grafica += "NUMERO DE JUGADORES";
+				final_nombre_ejeY_grafica = "NUMERO DE JUGADORES";
 				break;
 			}
 			case "num_partidas":{ 
 				final_titulo_grafica += "NUMERO DE PARTIDAS JUGADAS";
+				final_nombre_ejeY_grafica = "NUMERO DE PARTIDAS";
 				break;
 			}
 			case "media_duracion":{ 
 				final_titulo_grafica += "MEDIA DE DURACION (ms) DE LAS PARTIDAS";
+				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "des_media_duracion":{ 
 				final_titulo_grafica += "DESVIACION MEDIA DE DURACION (ms) DE LAS PARTIDAS";
+				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "mediana_duracion":{ 
 				final_titulo_grafica += "MEDIANA DE DURACION (ms) DE LAS PARTIDAS";
+				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "porcentaje_ganadas":{ 
 				final_titulo_grafica += "PORCENTAJE DE PARTIDAS GANADAS";
+				final_nombre_ejeY_grafica = "PORCENTAJE DE PARTIDAS GANADAS";
 				break;
 			}
 			case "media_dif_dados_optimos":{ 
 				final_titulo_grafica += "DIFERENCIA MEDIA ENTRE PASOS DADOS Y PASOS OPTIMOS";
+				final_nombre_ejeY_grafica = "DIFERENCIA DE PASOS";
 				break;
 			}
 		}
@@ -301,6 +315,8 @@ public class ResultsController {
 			}
 			model.addAttribute("resultados", usuarios);
 			model.addAttribute("titulo_grafica", final_titulo_grafica);
+			model.addAttribute("nombre_ejeX", final_nombre_ejeX_grafica);
+			model.addAttribute("nombre_ejeY", final_nombre_ejeY_grafica);
 			model.addAttribute("datos_grafica", final_datos_grafica);
 			model.addAttribute("nombres_grafica", final_nombres_grafica);
 			model.addAttribute("num_resultados", usuarios.size());
@@ -567,6 +583,8 @@ public class ResultsController {
 		
 		model.addAttribute("resultados", usuarios);
 		model.addAttribute("titulo_grafica", final_titulo_grafica);
+		model.addAttribute("nombre_ejeX", final_nombre_ejeX_grafica);
+		model.addAttribute("nombre_ejeY", final_nombre_ejeY_grafica);
 		model.addAttribute("datos_grafica", final_datos_grafica_2);
 		model.addAttribute("nombres_grafica", final_nombres_grafica);
 		model.addAttribute("num_resultados", usuarios.size());

@@ -55,6 +55,8 @@
 	    	var final = []
 	    	
 	    	var aux_titulo = document.getElementById("titulo_grafica").innerHTML;
+	    	var aux_ejeX = document.getElementById("nombre_ejeX").innerHTML;
+	    	var aux_ejeY = document.getElementById("nombre_ejeY").innerHTML;
 	    	
 	    	var aux_nombres = document.getElementById("nombres_grafica").innerHTML;
 	    	aux_nombres = aux_nombres.substring(1);
@@ -112,7 +114,27 @@
 	            axis: 'horizontal',
 	            keepInBounds: true,
 	            maxZoomIn: 4
-	          }
+	          },
+	          axisTitlesPosition: "out",
+	          hAxis: {
+      		  	title: aux_ejeX,
+			    titleTextStyle: {
+			      bold: true,
+			    },
+      		  	format: '0',
+      		  	textStyle: {
+			    	bold: true
+			    }
+    		  },
+	          vAxis: {
+      		  	title: aux_ejeY,
+			    titleTextStyle: {
+			      bold: true,
+			    },
+      		  	textStyle: {
+			    	bold: true
+			    }
+    		  }
 	        };
 	        
 			var chart_area = document.getElementById('chart_position');
@@ -167,6 +189,8 @@
 		    <div class="col-md-11">
 				<div><strong>LA CONSULTA HA DEVUELTO {{num_resultados}} USUARIOS</strong></div>
 				<span id="titulo_grafica" style="display: none;">{{titulo_grafica}}</span>
+				<span id="nombre_ejeX" style="display: none;">{{nombre_ejeX}}</span>
+				<span id="nombre_ejeY" style="display: none;">{{nombre_ejeY}}</span>
 				<span id="datos_grafica" style="display: none;">{{datos_grafica}}</span>
 				<span id="nombres_grafica" style="display: none;">{{nombres_grafica}}</span>
 				<div style="margin-top:1%"></div>
