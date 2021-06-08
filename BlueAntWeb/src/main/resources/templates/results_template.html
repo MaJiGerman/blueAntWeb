@@ -128,6 +128,7 @@
     		  },
 	          vAxis: {
       		  	title: aux_ejeY,
+      		  	minValue: 0,
 			    titleTextStyle: {
 			      bold: true,
 			    },
@@ -161,6 +162,7 @@
 		  	btnImg.addEventListener('click', function () {
       			var a = document.createElement('a');
       			a.href=chart.getImageURI();
+      			//window.open(chart.getImageURI())
 				a.download = "chart.jpg";
 				document.body.appendChild(a);
 				a.click();
