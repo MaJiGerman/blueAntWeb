@@ -180,46 +180,88 @@ public class ResultsController {
 		switch(tipo_grafico) {
 			case "num_jugadores":{
 				final_titulo_grafica += "NUMERO DE JUGADORES";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "NUMERO DE JUGADORES";
 				break;
 			}
 			case "num_partidas":{ 
 				final_titulo_grafica += "NUMERO DE PARTIDAS JUGADAS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " POR USUARIOS DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " POR USUARIOS DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "NUMERO DE PARTIDAS";
 				break;
 			}
 			case "media_duracion":{ 
 				final_titulo_grafica += "MEDIA DE DURACION (ms) DE LAS PARTIDAS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "des_media_duracion":{ 
 				final_titulo_grafica += "DESVIACION MEDIA DE DURACION (ms) DE LAS PARTIDAS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "mediana_duracion":{ 
 				final_titulo_grafica += "MEDIANA DE DURACION (ms) DE LAS PARTIDAS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " DE USUARIOS DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "DURACION (ms)";
 				break;
 			}
 			case "porcentaje_ganadas":{ 
 				final_titulo_grafica += "PORCENTAJE DE PARTIDAS GANADAS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " POR USUARIOS DE GENERO MASCULINO";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " POR USUARIOS DE GENERO FEMENINO";
+				}
 				final_nombre_ejeY_grafica = "PORCENTAJE DE PARTIDAS GANADAS";
 				break;
 			}
 			case "media_dif_dados_optimos":{ 
-				final_titulo_grafica += "DIFERENCIA MEDIA ENTRE PASOS DADOS Y PASOS OPTIMOS";
+				final_titulo_grafica += "DIFERENCIA MEDIA ENTRE PASOS DADOS Y OPTIMOS";
+				if(genero.equals("0")) {
+					final_titulo_grafica += " DE USUARIOS MASCULINOS";
+				}else if (genero.equals("1")) {
+					final_titulo_grafica += " DE USUARIOS FEMENINOS";
+				}
 				final_nombre_ejeY_grafica = "DIFERENCIA DE PASOS";
 				break;
 			}
 		}
 		final_titulo_grafica += " ENTRE " + rangoDesde + " Y " + rangoHasta + " AÑOS";
-		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase();
+		final_titulo_grafica += " AGRUPADOS POR " + agrupacion_resultados.toUpperCase() +" ("+usuarios.size()+" USUARIOS)";
 		
 		if(agrupacion_resultados.equals("edad")) {
 			final_nombres_grafica.add("Genero");
-			final_nombres_grafica.add("Ambos");
+			// Si se ha filtrado por un genero, solo se añade ese genero a la leyenda
+			if(genero.equals("0")) {
+				final_nombres_grafica.add("Masculino");
+			}else if (genero.equals("1")) {
+				final_nombres_grafica.add("Femenino");
+			}else {
+				final_nombres_grafica.add("Ambos");
+			}
 		}else {
 			final_nombres_grafica.add("Genero");
 			final_nombres_grafica.add("Masculino");

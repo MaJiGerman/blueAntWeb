@@ -8,16 +8,77 @@
 
     <title>blueAntWeb</title>
     
+    <style>
+	    #overlay {
+		  position: fixed; /* Sit on top of the page content */
+		  display: none; /* Hidden by default */
+		  width: 100%; /* Full width (cover the whole page) */
+		  height: 100%; /* Full height (cover the whole page) */
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+		  z-index: -10; /* Specify a stack order in case you're using a different order for other elements */
+		}
+		.loader {
+		  display: none; /* Hidden by default */
+		  border: 16px solid #f3f3f3; /* Light grey */
+		  border-top: 16px solid #076cd9; /* Blue */
+		  border-radius: 50%;
+		  width: 120px;
+		  height: 120px;
+		  position: absolute;
+		  left: 45%;
+		  top: 30%;
+		  transform: translate(-50%, -50%);
+		  animation: spin 2s linear infinite;
+		  z-index: 20; /* Specify a stack order in case you're using a different order for other elements */
+		}
+		
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}	
+    </style>  
+      
 	<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+	<script>
+		function yesnoCheck() {
+		    if (document.getElementById('ambos').checked) {
+		        document.getElementById('edad-genero').style.display = '';
+		        document.getElementById('edad-genero label').style.display = '';
+		        document.getElementById('edad-genero br').style.display = 'block';
+		        document.getElementById('edad').checked = false;
+		        document.getElementById('edad-genero').checked = true;
+		    }
+		    else {
+		        document.getElementById('edad-genero').style.display = 'none';
+		        document.getElementById('edad-genero').style.display = 'none';
+		        document.getElementById('edad-genero label').style.display = 'none';
+		        document.getElementById('edad-genero br').style.display = 'none';
+		        document.getElementById('edad-genero').checked = false;
+		        document.getElementById('edad').checked = true;
+		    }
+		}
+		window.onload = function(){	
+			document.getElementById("myForm").onsubmit = function loadingShow() {
+			    document.getElementById('overlay').style.display = 'block';
+			    document.getElementById('spinner').style.display = 'block';
+			}
+		}
+	</script>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
   </head>
   <body style="background-image: url('images/web-bg.jpg')">
+  	<div id="overlay"></div>
+  	<div class="loader" id="spinner"></div>
     <div class="container-fluid">
 	<div class="row" style="margin-top:3%">
 	<div class="col-md-12">
-		<form action='results' method="post">
+		<form action='results' method="post" id="myForm">
 		<div class="row">
 			<div class="col-md-1">
 			</div>
@@ -40,15 +101,14 @@
 					
 					<div class="form-group">
 						<label style="margin-left: 25px;"><strong>GENERO:</strong></label><br>
-						<input type="radio" id="ambos" name="genero" value="2" style="margin-left: 45px;" checked >
+						<input type="radio" id="ambos" onclick="javascript:yesnoCheck();" name="genero" value="2" style="margin-left: 45px;" checked >
 					  	<label for="ambos">AMBOS</label><br>
-			  			<input type="radio" id="masc" name="genero" value="0" style="margin-left: 45px;">
+			  			<input type="radio" id="masc" onclick="javascript:yesnoCheck();" name="genero" value="0" style="margin-left: 45px;">
 				  		<label for="masc">MASCULINO</label><br>
-					  	<input type="radio" id="fem" name="genero" value="1" style="margin-left: 45px;">
+					  	<input type="radio" id="fem" onclick="javascript:yesnoCheck();" name="genero" value="1" style="margin-left: 45px;">
 					  	<label for="fem">FEMENINO</label>
 					</div>
 					
-					<br>
 					<br>
 					
 					<div class="form-group">
@@ -76,7 +136,7 @@
 					<div class="form-group">
 						<label><strong>2.- TIPO DE AGRUPACION:</strong></label><br>
 					  	<input type="radio" id="edad-genero" name="agrupacion_resultados" value="edad-genero" style="margin-left: 20px;" checked>
-					  	<label for="edad-genero">EDAD y GENERO</label><br>
+					  	<label for="edad-genero" id="edad-genero label">EDAD y GENERO</label><br id="edad-genero br">
 			  			<input type="radio" id="edad" name="agrupacion_resultados" value="edad" style="margin-left: 20px;">
 				  		<label for="edad">EDAD</label><br>
 						<input type="radio" id="genero" name="agrupacion_resultados" value="genero" style="margin-left: 20px;">
@@ -84,7 +144,7 @@
 					</div>
 					
 					<div class="form-group">
-						<label><strong>3.- TIPO GRAFICO:</strong></label><br>
+						<label><strong>3.- TIPO DE CONSULTA:</strong></label><br>
 						<input type="radio" id="num_jugadores" name="tipo_grafico" value="num_jugadores" style="margin-left: 20px;" checked>
 					  	<label for="num_jugadores">NUMERO JUGADORES</label><br>
 			  			<input type="radio" id="num_partidas" name="tipo_grafico" value="num_partidas" style="margin-left: 20px;">

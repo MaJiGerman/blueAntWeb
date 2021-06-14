@@ -106,7 +106,27 @@
 	    	
 	    	var data = google.visualization.arrayToDataTable(final);
 			var view = new google.visualization.DataView(data);
-			
+			try{
+				view.setColumns([0, 1,
+	                       { calc: "stringify",
+	                         sourceColumn: 1,
+	                         type: "string",
+	                         role: "annotation" },
+	                         2,
+	                         { calc: "stringify",
+	                         sourceColumn: 2,
+	                         type: "string",
+	                         role: "annotation" }
+	                         ]);
+            }catch{
+				view.setColumns([0, 1,
+	                       { calc: "stringify",
+	                         sourceColumn: 1,
+	                         type: "string",
+	                         role: "annotation" }
+	                         ]);
+            }
+                       
 	        var options = {
 	          title: aux_titulo,
 	          explorer: {
@@ -135,7 +155,18 @@
       		  	textStyle: {
 			    	bold: true
 			    }
-    		  }
+    		  },
+    		  annotations: {
+                alwaysOutside: true,
+                highContrast: true, 
+			    textStyle: {
+			      bold: true,
+			      // The color of the text.
+			      color: '#FFFFFF',
+			      // The color of the text outline.
+			      auraColor: '#000000'
+			   	}
+			  }
 	        };
 	        
 			var chart_area = document.getElementById('chart_position');
@@ -162,7 +193,6 @@
 		  	btnImg.addEventListener('click', function () {
       			var a = document.createElement('a');
       			a.href=chart.getImageURI();
-      			//window.open(chart.getImageURI())
 				a.download = "chart.jpg";
 				document.body.appendChild(a);
 				a.click();
@@ -177,13 +207,13 @@
 </head>
 <body>
 	<div class="info" style="margin-top:1%">
-			<i class="icon-info-sign" style="margin-left: 50px;"></i>
-			<span class="extra-info" style="margin-left: 50px;">
+			<i class="icon-info-sign" style="margin-left: 70px;"></i>
+			<span class="extra-info" style="margin-left: 70px;">
 				<strong>Se puede hacer zoom sobre la gráfica haciendo click izquierdo y arrastrando sobre la zona deseada.</strong><br>
 				<strong>Para volver al estado original, hacer click derecho sobre la gráfica</strong>
 			</span>
      	</div><br>
-		<span style="margin-left: 50px; margin-top: -20px; position: absolute;"><strong>Ayuda</strong></span>
+		<span style="margin-left: 70px; margin-top: -20px; position: absolute;"><strong>Ayuda</strong></span>
 	<div class="container-fluid">
 		<div class="row">
 		    <div class="col-md-1">
