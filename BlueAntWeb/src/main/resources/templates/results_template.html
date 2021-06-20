@@ -14,6 +14,7 @@
     <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <style>
+    
     * {
 	  transition: all .2s ease;
 	}
@@ -40,10 +41,10 @@
 	
 	.info:hover {
 	  background-color: LightGray;
-	  width: 50vw;
+	  width: 55vw;
 	  height: 10vh;
 	  text-align: left !important;
-	  margin-left: 2vw;
+	  margin-left: 20px;
 	}
     </style>
     
@@ -162,9 +163,10 @@
 			    textStyle: {
 			      bold: true,
 			      // The color of the text.
-			      color: '#FFFFFF',
+			      color: '#000000',
 			      // The color of the text outline.
-			      auraColor: '#000000'
+			     // auraColor: '#000000',
+			      opacity: '0.6'
 			   	}
 			  }
 	        };
@@ -207,19 +209,18 @@
 </head>
 <body>
 	<div class="info" style="margin-top:1%">
-			<i class="icon-info-sign" style="margin-left: 70px;"></i>
-			<span class="extra-info" style="margin-left: 70px;">
+			<i class="icon-info-sign" style="margin-left: 60px;"></i>
+			<span class="extra-info" style="margin-left: 60px;">
 				<strong>Se puede hacer zoom sobre la gráfica haciendo click izquierdo y arrastrando sobre la zona deseada.</strong><br>
 				<strong>Para volver al estado original, hacer click derecho sobre la gráfica</strong>
 			</span>
      	</div><br>
-		<span style="margin-left: 70px; margin-top: -20px; position: absolute;"><strong>Ayuda</strong></span>
+		<span style="margin-left: 70px; margin-top: -20px; position: absolute; font-size: large;"><strong>Ayuda</strong></span>
 	<div class="container-fluid">
 		<div class="row">
 		    <div class="col-md-1">
 		    </div>
 		    <div class="col-md-11">
-				<div><strong>LA CONSULTA HA DEVUELTO {{num_resultados}} USUARIOS</strong></div>
 				<span id="titulo_grafica" style="display: none;">{{titulo_grafica}}</span>
 				<span id="nombre_ejeX" style="display: none;">{{nombre_ejeX}}</span>
 				<span id="nombre_ejeY" style="display: none;">{{nombre_ejeY}}</span>
